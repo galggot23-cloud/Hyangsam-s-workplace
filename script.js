@@ -89,11 +89,11 @@ function initApp() {
 // 원어민 음성(TTS) 출력 기능
 // ==========================================
 function speak(text) {
-    window.speechSynthesis.cancel(); 
+    window.speechSynthesis.cancel(); // 이전 소리 끄기
     
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; 
-    utterance.rate = 0.85;    
+    utterance.lang = 'en-US'; // 미국식 영어
+    utterance.rate = 0.85;    // 중3 맞춤 0.85배속 속도
     
     window.speechSynthesis.speak(utterance);
 }
@@ -120,17 +120,20 @@ function showWordCard() {
     
     updateProgressBar();
     
+    // 카드가 뜨면 원어민 발음 자동 재생
     setTimeout(() => {
         speak(current.word);
     }, 100);
 }
 
+// 🔊 스피커 아이콘 누를 때 발음 재생
 btnSpeak.addEventListener("click", (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation(); // 카드가 뒤집히지 않게 차단
     const current = currentWords[currentIndex];
     speak(current.word);
 });
 
+// 카드 클릭 시 예문 확인용 뒤집기
 flashcard.addEventListener("click", () => {
     isFlipped = !isFlipped;
     if (isFlipped) {
@@ -145,6 +148,7 @@ btnNextWord.addEventListener("click", () => {
         currentIndex++;
         showWordCard();
     } else {
+        // 2단계 영영 퀴즈로 전환
         appMode = "quiz";
         currentIndex = 0;
         stepStudySection.classList.add("hidden");
