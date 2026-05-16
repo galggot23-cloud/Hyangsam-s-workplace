@@ -1,282 +1,65 @@
-:root {
-    --primary-color: #4a90e2;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --bg-color: #f4f6f9;
-    --card-color: #ffffff;
-}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중3 영어 단원별 어휘 학습기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1 id="unit-title">Lesson 1. New Beginnings</h1>
+            <div class="progress-bar-container">
+                <div id="progress-bar" style="width: 0%;"></div>
+            </div>
+        </header>
 
-body {
-    font-family: 'Malgun Gothic', sans-serif;
-    background-color: var(--bg-color);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+        <main>
+            <section id="step-study" class="card-section">
+                <div class="step-badge">1단계: 단어 암기</div>
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front">
+                        <div class="word-audio-wrapper">
+                            <h2 id="study-word">word</h2>
+                            <button id="btn-speak" class="btn-audio" title="발음 듣기">🔊</button>
+                        </div>
+                        <p id="study-meaning">뜻</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="example-tag">Example Sentence</span>
+                        <p id="study-example"><i>예문이 들어갑니다.</i></p>
+                    </div>
+                </div>
+                <div class="hint-text">카드를 클릭하면 예문을 확인할 수 있습니다.</div>
+                <div class="btn-group">
+                    <button id="btn-prev" class="btn secondary">이전</button>
+                    <button id="btn-next-word" class="btn primary">다음 단어</button>
+                </div>
+            </section>
 
-.app-container {
-    width: 100%;
-    max-width: 500px;
-    background: var(--card-color);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-}
+            <section id="step-quiz" class="card-section hidden">
+                <div class="step-badge">2단계: 영영 퀴즈 도전</div>
+                <div class="quiz-question">
+                    <h2 id="quiz-definition" class="definition-text">English definition goes here.</h2>
+                    <p class="quiz-instruction">위 뜻풀이에 알맞은 영어 단어를 고르세요.</p>
+                </div>
+                <div class="quiz-options" id="quiz-options">
+                    </div>
+                <div id="quiz-feedback" class="feedback-text"></div>
+            </section>
 
-header {
-    margin-bottom: 25px;
-    text-align: center;
-}
+            <section id="step-result" class="card-section hidden">
+                <div class="step-badge">3단계: 학습 완료</div>
+                <div class="result-container">
+                    <h2>수고하셨습니다!</h2>
+                    <p class="score-text">맞춘 개수: <span id="final-score">0</span> / <span id="total-words">0</span></p>
+                    <button id="btn-restart" class="btn primary">처음부터 다시 하기</button>
+                </div>
+            </section>
+        </main>
+    </div>
 
-#unit-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 15px;
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: #e9ecef;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-#progress-bar {
-    height: 100%;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-.card-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.step-badge {
-    background-color: #e2eefd;
-    color: var(--primary-color);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-}
-
-/* 1단계: 플래시 카드 디자인 */
-.flashcard {
-    width: 100%;
-    height: 220px;
-    background-color: #fff;
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    cursor: pointer;
-    padding: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
-}
-
-.flashcard.flipped {
-    background-color: #f8f9fa;
-    border-color: var(--primary-color);
-}
-
-.card-front, .card-back {
-    width: 100%;
-}
-
-.word-audio-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.card-front h2 {
-    font-size: 2.4rem;
-    color: var(--primary-color);
-    margin: 0;
-}
-
-/* 🔊 스피커 버튼 디자인 */
-.btn-audio {
-    background: none;
-    border: none;
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background 0.2s, transform 0.1s;
-    line-height: 1;
-}
-
-.btn-audio:hover {
-    background-color: #e9ecef;
-    transform: scale(1.1);
-}
-
-.btn-audio:active {
-    transform: scale(0.95);
-}
-
-#study-meaning {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #495057;
-    margin: 0;
-}
-
-.card-back {
-    display: none;
-}
-
-.flashcard.flipped .card-front { display: none; }
-.flashcard.flipped .card-back { display: block; }
-
-.example-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    background-color: #6c757d;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-#study-example {
-    font-size: 1.1rem;
-    color: #212529;
-    line-height: 1.4;
-    margin: 0;
-}
-
-.hint-text {
-    font-size: 0.85rem;
-    color: #999;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-/* 2단계: 영영 퀴즈 영역 디자인 */
-.quiz-question {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    border-left: 5px solid var(--primary-color);
-}
-
-.definition-text {
-    font-size: 1.25rem;
-    color: #333;
-    line-height: 1.5;
-    margin: 0 0 10px 0;
-    word-break: keep-all;
-}
-
-.quiz-instruction {
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-    margin: 0;
-}
-
-.quiz-options {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.option-btn {
-    width: 100%;
-    padding: 14px;
-    background-color: #fff;
-    border: 1.5px solid #ced4da;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.option-btn:hover {
-    background-color: #f1f3f5;
-}
-
-.option-btn.correct {
-    background-color: #d4edda;
-    border-color: var(--success-color);
-    color: #155724;
-}
-
-.option-btn.wrong {
-    background-color: #f8d7da;
-    border-color: var(--danger-color);
-    color: #721c24;
-}
-
-.feedback-text {
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    height: 24px;
-}
-
-/* 3단계: 결과 디자인 */
-.result-container {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.score-text {
-    font-size: 1.3rem;
-    margin: 20px 0 30px 0;
-}
-
-#final-score {
-    font-weight: bold;
-    color: var(--primary-color);
-    font-size: 1.8rem;
-}
-
-.btn-group {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-}
-
-.btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn.primary { background-color: var(--primary-color); color: white; }
-.btn.primary:hover { background-color: #357abd; }
-.btn.secondary { background-color: var(--secondary-color); color: white; }
-.btn.secondary:hover { background-color: #5a6268; }
+    <script src="script.js"></script>
+</body>
+</html>
