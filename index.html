@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중3 영어 단원별 어휘 학습기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 단원 제목 -->
+        <header>
+            <h1 id="unit-title">Lesson 1. New Beginnings</h1>
+            <div class="progress-bar-container">
+                <div id="progress-bar" style="width: 0%;"></div>
+            </div>
+        </header>
+
+        <main>
+            <!-- [1단계] 카드 학습 화면 -->
+            <section id="step-study" class="card-section">
+                <div class="step-badge">1단계: 단어 암기</div>
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front">
+                        <h2 id="study-word">word</h2>
+                    </div>
+                    <div class="card-back">
+                        <p id="study-meaning">뜻</p>
+                        <p id="study-example"><i>예문이 들어갑니다.</i></p>
+                    </div>
+                </div>
+                <div class="hint-text">카드를 클릭하면 뜻과 예문이 보입니다.</div>
+                <div class="btn-group">
+                    <button id="btn-prev" class="btn secondary">이전</button>
+                    <button id="btn-next-word" class="btn primary">다음 단어</button>
+                </div>
+            </section>
+
+            <!-- [2단계] 영영 퀴즈 화면 -->
+            <section id="step-quiz" class="card-section hidden">
+                <div class="step-badge">2단계: 영영 퀴즈 도전</div>
+                <div class="quiz-question">
+                    <!-- 뜻풀이가 들어갈 자리는 글자 수에 맞춰 스타일을 넣기 위해 클래스 추가 -->
+                    <h2 id="quiz-definition" class="definition-text">English definition goes here.</h2>
+                    <p class="quiz-instruction">위 뜻풀이에 알맞은 영어 단어를 고르세요.</p>
+                </div>
+                <div class="quiz-options" id="quiz-options">
+                    <!-- 자바스크립트로 영어 단어 보기 4개가 생성됨 -->
+                </div>
+                <div id="quiz-feedback" class="feedback-text"></div>
+            </section>
+
+            <!-- [3단계] 결과 화면 -->
+            <section id="step-result" class="card-section hidden">
+                <div class="step-badge">3단계: 학습 완료</div>
+                <div class="result-container">
+                    <h2>수고하셨습니다!</h2>
+                    <p class="score-text">맞춘 개수: <span id="final-score">0</span> / <span id="total-words">0</span></p>
+                    <button id="btn-restart" class="btn primary">처음부터 다시 하기</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
