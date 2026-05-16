@@ -1,6 +1,6 @@
 // ==========================================
 // [선생님 전용] 단어 데이터 설정 구역
-// definition(뜻풀이) 항목에 영영 풀이를 적어주시면 됩니다!
+// 새로운 단원을 만드실 때는 아래 내용만 교체하시면 됩니다!
 // ==========================================
 const UNIT_TITLE = "Lesson 1. New Beginnings";
 
@@ -38,7 +38,7 @@ const VOCAB_DATA = [
 ];
 
 // ==========================================
-// 앱 상태 관리 변수들
+// 앱 내부 제어 변수들
 // ==========================================
 let currentWords = [];
 let currentIndex = 0;
@@ -46,7 +46,7 @@ let score = 0;
 let isFlipped = false;
 let appMode = "study"; 
 
-// DOM 요소 탐색
+// HTML 요소 연결
 const unitTitleEl = document.getElementById("unit-title");
 const progressBar = document.getElementById("progress-bar");
 
@@ -57,6 +57,7 @@ const studyMeaning = document.getElementById("study-meaning");
 const studyExample = document.getElementById("study-example");
 const btnPrev = document.getElementById("btn-prev");
 const btnNextWord = document.getElementById("btn-next-word");
+const btnSpeak = document.getElementById("btn-speak");
 
 const stepQuizSection = document.getElementById("step-quiz");
 const quizDefinition = document.getElementById("quiz-definition");
@@ -69,7 +70,7 @@ const totalWords = document.getElementById("total-words");
 const btnRestart = document.getElementById("btn-restart");
 
 // ==========================================
-// 초기화 및 게임 시작
+// 앱 최초 실행 및 초기화
 // ==========================================
 function initApp() {
     unitTitleEl.textContent = UNIT_TITLE;
@@ -83,6 +84,19 @@ function initApp() {
     stepResultSection.classList.add("hidden");
     
     showWordCard();
+}
+
+// ==========================================
+// 원어민 음성(TTS) 출력 기능
+// ==========================================
+function speak(text) {
+    window.speechSynthesis.cancel(); // 이전 음성 안내 강제 취소
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // 미국식 영어 발음
+    utterance.rate = 0.85;    // 중3 맞춤형 원어민 속도 조절 (기본 속도보다 15% 느리게)
+    
+    window.speechSynthesis.speak(utterance);
 }
 
 // ==========================================
@@ -106,8 +120,21 @@ function showWordCard() {
     }
     
     updateProgressBar();
+    
+    // 다음/이전 카드로 넘어오면 자동으로 영어 발음 재생
+    setTimeout(() => {
+        speak(current.word);
+    }, 100);
 }
 
+// 🔊 스피커 아이콘 누를 때 (카드가 뒤집히지 않게 제어하며 발음 재생)
+btnSpeak.addEventListener("click", (e) => {
+    e.stopPropagation(); 
+    const current = currentWords[currentIndex];
+    speak(current.word);
+});
+
+// 카드 영역 클릭 시 예문 확인용 뒤집기 효과
 flashcard.addEventListener("click", () => {
     isFlipped = !isFlipped;
     if (isFlipped) {
@@ -122,6 +149,7 @@ btnNextWord.addEventListener("click", () => {
         currentIndex++;
         showWordCard();
     } else {
+        // 모든 카드 학습 완료 시 2단계 영영 퀴즈 단계로 이동
         appMode = "quiz";
         currentIndex = 0;
         stepStudySection.classList.add("hidden");
@@ -138,28 +166,27 @@ btnPrev.addEventListener("click", () => {
 });
 
 // ==========================================
-// 2단계: 영영 뜻풀이 퀴즈 기능 (단어 보기 자동 생성)
+// 2단계: 영영 뜻풀이 퀴즈 기능
 // ==========================================
 function showQuiz() {
     quizFeedback.textContent = "";
     const current = currentWords[currentIndex];
     
-    // 문제로 영영 뜻풀이(definition) 제시
+    // 문제창에 영영 뜻풀이(definition) 노출
     quizDefinition.textContent = current.definition;
     
-    // 보기 4개 생성 (정답 영어 단어 1개 + 오답 영어 단어 3개)
+    // 보기 4개 랜덤 구성 (정답 1개 + 오답 3개)
     const options = [current.word];
     const otherWords = currentWords
         .filter(w => w.word !== current.word)
         .map(w => w.word);
     
-    // 다른 영어 단어들을 무작위로 섞어서 오답 생성
     shuffleArray(otherWords);
     for (let i = 0; i < Math.min(3, otherWords.length); i++) {
         options.push(otherWords[i]);
     }
     
-    // 단어 수가 4개 미만일 때를 대비한 예외 처리 단어들
+    // 입력된 총 단어가 4개 미만일 때 에러 방지용 기본 보기 단어 리스트
     const backupWords = ["challenge", "creative", "respect", "practice"];
     let backupIdx = 0;
     while (options.length < 4) {
@@ -169,16 +196,15 @@ function showQuiz() {
         backupIdx++;
     }
     
-    // 최종 보기 4개를 다시 무작위 배열
+    // 최종 보기 목록 셔플
     shuffleArray(options);
     
-    // 화면에 보기 버튼 생성
+    // 화면에 4지선다형 영어 단어 버튼 생성
     quizOptions.innerHTML = "";
     options.forEach(optionText => {
         const button = document.createElement("button");
         button.className = "option-btn";
         button.textContent = optionText;
-        // 정답 검사 시 단어(word)를 비교하도록 세팅
         button.addEventListener("click", () => checkAnswer(button, optionText, current.word));
         quizOptions.appendChild(button);
     });
@@ -188,7 +214,7 @@ function showQuiz() {
 
 function checkAnswer(selectedBtn, selectedText, correctText) {
     const buttons = quizOptions.querySelectorAll(".option-btn");
-    buttons.forEach(btn => btn.disabled = true);
+    buttons.forEach(btn => btn.disabled = true); // 채점 중 중복 클릭 차단
     
     if (selectedText === correctText) {
         selectedBtn.classList.add("correct");
@@ -200,12 +226,13 @@ function checkAnswer(selectedBtn, selectedText, correctText) {
         quizFeedback.style.color = "var(--danger-color)";
         quizFeedback.textContent = `틀렸습니다. 정답은 [ ${correctText} ] 입니다.`;
         
+        // 학생들이 오답 노트를 인지하도록 정답 버튼도 함께 초록색 유도
         buttons.forEach(btn => {
             if (btn.textContent === correctText) btn.classList.add("correct");
         });
     }
     
-    // 학생들이 정답을 확인할 수 있도록 2.5초 대기 후 다음 문제 전환
+    // 정답 피드백을 눈으로 본 후 2.5초 뒤 다음 문제로 자동 이동
     setTimeout(() => {
         if (currentIndex < currentWords.length - 1) {
             currentIndex++;
@@ -217,7 +244,7 @@ function checkAnswer(selectedBtn, selectedText, correctText) {
 }
 
 // ==========================================
-// 3단계: 결과 확인 및 유틸리티
+// 3단계: 결과 및 유틸리티 기능
 // ==========================================
 function showResult() {
     stepQuizSection.classList.add("hidden");
@@ -239,6 +266,7 @@ function updateProgressBar() {
     progressBar.style.width = `${percent}%`;
 }
 
+// 배열 무작위 믹스 함수
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
