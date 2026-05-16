@@ -1,299 +1,266 @@
-:root {
-    --primary-color: #4a90e2;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --bg-color: #f4f6f9;
-    --card-color: #ffffff;
+// ==========================================
+// [선생님 전용] 단어 데이터 설정 구역
+// ==========================================
+const UNIT_TITLE = "Lesson 1. New Beginnings";
+
+const VOCAB_DATA = [
+    { 
+        word: "experience", 
+        meaning: "경험", 
+        definition: "knowledge or skill that you get from doing or seeing things", 
+        example: "Traveling is a great experience." 
+    },
+    { 
+        word: "achieve", 
+        meaning: "성취하다, 이루다", 
+        definition: "to successfully bring about or reach a desired objective or result", 
+        example: "You can achieve your goals." 
+    },
+    { 
+        word: "encourage", 
+        meaning: "격려하다, 장려하다", 
+        definition: "to give support, confidence, or hope to someone", 
+        example: "My teacher encouraged me to try again." 
+    },
+    { 
+        word: "positive", 
+        meaning: "긍정적인", 
+        definition: "thinking about the good qualities of a situation; full of hope", 
+        example: "Try to have a positive attitude." 
+    },
+    { 
+        word: "improve", 
+        meaning: "향상시키다, 나아지다", 
+        definition: "to make or become better than before", 
+        example: "I want to improve my English skills." 
+    }
+];
+
+// ==========================================
+// 앱 내부 제어 변수들
+// ==========================================
+let currentWords = [];
+let currentIndex = 0;
+let score = 0;
+let isFlipped = false;
+let appMode = "study"; 
+
+// HTML 요소 연결
+const unitTitleEl = document.getElementById("unit-title");
+const progressBar = document.getElementById("progress-bar");
+
+const stepStudySection = document.getElementById("step-study");
+const flashcard = document.getElementById("flashcard");
+const studyWord = document.getElementById("study-word");
+const studyMeaning = document.getElementById("study-meaning");
+const studyExample = document.getElementById("study-example");
+const btnPrev = document.getElementById("btn-prev");
+const btnNextWord = document.getElementById("btn-next-word");
+const btnSpeak = document.getElementById("btn-speak");
+
+const stepQuizSection = document.getElementById("step-quiz");
+const quizDefinition = document.getElementById("quiz-definition");
+const quizOptions = document.getElementById("quiz-options");
+const quizFeedback = document.getElementById("quiz-feedback");
+
+const stepResultSection = document.getElementById("step-result");
+const finalScore = document.getElementById("final-score");
+const totalWords = document.getElementById("total-words");
+const btnRestart = document.getElementById("btn-restart");
+
+// ==========================================
+// 앱 최초 실행 및 초기화
+// ==========================================
+function initApp() {
+    unitTitleEl.textContent = UNIT_TITLE;
+    currentWords = [...VOCAB_DATA];
+    currentIndex = 0;
+    score = 0;
+    appMode = "study";
+    
+    stepStudySection.classList.remove("hidden");
+    stepQuizSection.classList.add("hidden");
+    stepResultSection.classList.add("hidden");
+    
+    showWordCard();
 }
 
-body {
-    font-family: 'Malgun Gothic', sans-serif;
-    background-color: var(--bg-color);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+// ==========================================
+// 원어민 음성(TTS) 출력 기능
+// ==========================================
+function speak(text) {
+    window.speechSynthesis.cancel(); 
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; 
+    utterance.rate = 0.85;    
+    
+    window.speechSynthesis.speak(utterance);
 }
 
-.app-container {
-    width: 100%;
-    max-width: 500px;
-    background: var(--card-color);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+// ==========================================
+// 1단계: 카드 학습 기능
+// ==========================================
+function showWordCard() {
+    isFlipped = false;
+    flashcard.classList.remove("flipped");
+    
+    const current = currentWords[currentIndex];
+    studyWord.textContent = current.word;
+    studyMeaning.textContent = current.meaning;
+    studyExample.textContent = current.example;
+    
+    btnPrev.disabled = currentIndex === 0;
+    
+    if (currentIndex === currentWords.length - 1) {
+        btnNextWord.textContent = "영영 퀴즈 풀러 가기";
+    } else {
+        btnNextWord.textContent = "다음 단어";
+    }
+    
+    updateProgressBar();
+    
+    setTimeout(() => {
+        speak(current.word);
+    }, 100);
 }
 
-header {
-    margin-bottom: 25px;
-    text-align: center;
+btnSpeak.addEventListener("click", (e) => {
+    e.stopPropagation(); 
+    const current = currentWords[currentIndex];
+    speak(current.word);
+});
+
+flashcard.addEventListener("click", () => {
+    isFlipped = !isFlipped;
+    if (isFlipped) {
+        flashcard.classList.add("flipped");
+    } else {
+        flashcard.classList.remove("flipped");
+    }
+});
+
+btnNextWord.addEventListener("click", () => {
+    if (currentIndex < currentWords.length - 1) {
+        currentIndex++;
+        showWordCard();
+    } else {
+        appMode = "quiz";
+        currentIndex = 0;
+        stepStudySection.classList.add("hidden");
+        stepQuizSection.classList.remove("hidden");
+        showQuiz();
+    }
+});
+
+btnPrev.addEventListener("click", () => {
+    if (currentIndex > 0) {
+        currentIndex--;
+        showWordCard();
+    }
+});
+
+// ==========================================
+// 2단계: 영영 뜻풀이 퀴즈 기능
+// ==========================================
+function showQuiz() {
+    quizFeedback.textContent = "";
+    const current = currentWords[currentIndex];
+    
+    quizDefinition.textContent = current.definition;
+    
+    const options = [current.word];
+    const otherWords = currentWords
+        .filter(w => w.word !== current.word)
+        .map(w => w.word);
+    
+    shuffleArray(otherWords);
+    for (let i = 0; i < Math.min(3, otherWords.length); i++) {
+        options.push(otherWords[i]);
+    }
+    
+    const backupWords = ["challenge", "creative", "respect", "practice"];
+    let backupIdx = 0;
+    while (options.length < 4) {
+        if (!options.includes(backupWords[backupIdx])) {
+            options.push(backupWords[backupIdx]);
+        }
+        backupIdx++;
+    }
+    
+    shuffleArray(options);
+    
+    quizOptions.innerHTML = "";
+    options.forEach(optionText => {
+        const button = document.createElement("button");
+        button.className = "option-btn";
+        button.textContent = optionText;
+        button.addEventListener("click", () => checkAnswer(button, optionText, current.word));
+        quizOptions.appendChild(button);
+    });
+    
+    updateProgressBar();
 }
 
-#unit-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 15px;
+function checkAnswer(selectedBtn, selectedText, correctText) {
+    const buttons = quizOptions.querySelectorAll(".option-btn");
+    buttons.forEach(btn => btn.disabled = true); 
+    
+    if (selectedText === correctText) {
+        selectedBtn.classList.add("correct");
+        quizFeedback.style.color = "var(--success-color)";
+        quizFeedback.textContent = "정답입니다! Perfect! 🌟";
+        score++;
+    } else {
+        selectedBtn.classList.add("wrong");
+        quizFeedback.style.color = "var(--danger-color)";
+        quizFeedback.textContent = `틀렸습니다. 정답은 [ ${correctText} ] 입니다.`;
+        
+        buttons.forEach(btn => {
+            if (btn.textContent === correctText) btn.classList.add("correct");
+        });
+    }
+    
+    setTimeout(() => {
+        if (currentIndex < currentWords.length - 1) {
+            currentIndex++;
+            showQuiz();
+        } else {
+            showResult();
+        }
+    }, 2500);
 }
 
-.progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: #e9ecef;
-    border-radius: 4px;
-    overflow: hidden;
+// ==========================================
+// 3단계: 결과 및 유틸리티 기능
+// ==========================================
+function showResult() {
+    stepQuizSection.classList.add("hidden");
+    stepResultSection.classList.remove("hidden");
+    
+    finalScore.textContent = score;
+    totalWords.textContent = currentWords.length;
+    
+    progressBar.style.width = "100%";
 }
 
-#progress-bar {
-    height: 100%;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease;
+function updateProgressBar() {
+    let percent = 0;
+    if (appMode === "study") {
+        percent = ((currentIndex) / currentWords.length) * 50;
+    } else if (appMode === "quiz") {
+        percent = 50 + ((currentIndex) / currentWords.length) * 50;
+    }
+    progressBar.style.width = `${percent}%`;
 }
 
-.card-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
-.hidden {
-    display: none !important;
-}
+btnRestart.addEventListener("click", initApp);
 
-.step-badge {
-    background-color: #e2eefd;
-    color: var(--primary-color);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-}
-
-/* 1단계: 플래시 카드 */
-.flashcard {
-    width: 100%;
-    height: 220px;
-    background-color: #fff;
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    cursor: pointer;
-    padding: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
-}
-
-.flashcard.flipped {
-    background-color: #f8f9fa;
-    border-color: var(--primary-color);
-}
-
-.card-front, .card-back {
-    width: 100%;
-}
-
-.word-audio-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.card-front h2 {
-    font-size: 2.4rem;
-    color: var(--primary-color);
-    margin: 0;
-}
-
-.btn-audio {
-    background: none;
-    border: none;
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background 0.2s, transform 0.1s;
-    line-height: 1;
-}
-
-.btn-audio:hover {
-    background-color: #e9ecef;
-    transform: scale(1.1);
-}
-
-.btn-audio:active {
-    transform: scale(0.95);
-}
-
-#study-meaning {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #495057;
-    margin: 0;
-}
-
-.card-back {
-    display: none;
-}
-
-.flashcard.flipped .card-front { 
-    display: none; 
-}
-
-.flashcard.flipped .card-back { 
-    display: block; 
-}
-
-.example-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    background-color: #6c757d;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-#study-example {
-    font-size: 1.1rem;
-    color: #212529;
-    line-height: 1.4;
-    margin: 0;
-}
-
-.hint-text {
-    font-size: 0.85rem;
-    color: #999;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-/* 2단계: 퀴즈 영역 */
-.quiz-question {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    border-left: 5px solid var(--primary-color);
-}
-
-.definition-text {
-    font-size: 1.25rem;
-    color: #333;
-    line-height: 1.5;
-    margin: 0 0 10px 0;
-    word-break: keep-all;
-}
-
-.quiz-instruction {
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-    margin: 0;
-}
-
-.quiz-options {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.option-btn {
-    width: 100%;
-    padding: 14px;
-    background-color: #fff;
-    border: 1.5px solid #ced4da;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.option-btn:hover {
-    background-color: #f1f3f5;
-}
-
-.option-btn.correct {
-    background-color: #d4edda;
-    border-color: var(--success-color);
-    color: #155724;
-}
-
-.option-btn.wrong {
-    background-color: #f8d7da;
-    border-color: var(--danger-color);
-    color: #721c24;
-}
-
-.feedback-text {
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    height: 24px;
-}
-
-/* 3단계: 결과 */
-.result-container {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.score-text {
-    font-size: 1.3rem;
-    margin: 20px 0 30px 0;
-}
-
-#final-score {
-    font-weight: bold;
-    color: var(--primary-color);
-    font-size: 1.8rem;
-}
-
-.btn-group {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-}
-
-.btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn.primary { 
-    background-color: var(--primary-color); 
-    color: white; 
-}
-
-.btn.primary:hover { 
-    background-color: #357abd; 
-}
-
-.btn.secondary { 
-    background-color: var(--secondary-color); 
-    color: white; 
-}
-
-.btn.secondary:hover { 
-    background-color: #5a6268; 
-}
+window.onload = initApp;
