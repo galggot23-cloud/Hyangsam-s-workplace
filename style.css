@@ -74,7 +74,7 @@ header {
 /* 1단계: 플래시 카드 */
 .flashcard {
     width: 100%;
-    height: 200px;
+    height: 220px;
     background-color: #fff;
     border: 2px solid #e9ecef;
     border-radius: 12px;
@@ -94,9 +94,48 @@ header {
     border-color: var(--primary-color);
 }
 
+.card-front, .card-back {
+    width: 100%;
+}
+
+.word-audio-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 .card-front h2 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     color: var(--primary-color);
+    margin: 0;
+}
+
+.btn-audio {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s, transform 0.1s;
+    line-height: 1;
+}
+
+.btn-audio:hover {
+    background-color: #e9ecef;
+    transform: scale(1.1);
+}
+
+.btn-audio:active {
+    transform: scale(0.95);
+}
+
+#study-meaning {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #495057;
     margin: 0;
 }
 
@@ -104,19 +143,31 @@ header {
     display: none;
 }
 
-.flashcard.flipped .card-front { display: none; }
-.flashcard.flipped .card-back { display: block; }
+.flashcard.flipped .card-front { 
+    display: none; 
+}
 
-#study-meaning {
-    font-size: 1.5rem;
+.flashcard.flipped .card-back { 
+    display: block; 
+}
+
+.example-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
     font-weight: bold;
-    color: #212529;
-    margin: 0 0 10px 0;
 }
 
 #study-example {
-    font-size: 0.95rem;
-    color: var(--secondary-color);
+    font-size: 1.1rem;
+    color: #212529;
+    line-height: 1.4;
+    margin: 0;
 }
 
 .hint-text {
@@ -126,7 +177,7 @@ header {
     margin-bottom: 20px;
 }
 
-/* 2단계: 퀴즈 영역 스타일 수정 */
+/* 2단계: 퀴즈 영역 */
 .quiz-question {
     width: 100%;
     text-align: center;
@@ -143,7 +194,7 @@ header {
     color: #333;
     line-height: 1.5;
     margin: 0 0 10px 0;
-    word-break: keep-all; /* 문장이 어색하게 끊기지 않도록 설정 */
+    word-break: keep-all;
 }
 
 .quiz-instruction {
@@ -165,7 +216,7 @@ header {
     background-color: #fff;
     border: 1.5px solid #ced4da;
     border-radius: 8px;
-    text-align: center; /* 단어 정렬을 중앙으로 변경 */
+    text-align: center;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
@@ -192,7 +243,7 @@ header {
     margin-top: 15px;
     font-weight: bold;
     font-size: 1.1rem;
-    height: 24px; /* 피드백이 떴을 때 화면이 출렁이지 않도록 높이 고정 */
+    height: 24px;
 }
 
 /* 3단계: 결과 */
@@ -229,7 +280,20 @@ header {
     transition: background 0.2s;
 }
 
-.btn.primary { background-color: var(--primary-color); color: white; }
-.btn.primary:hover { background-color: #357abd; }
-.btn.secondary { background-color: var(--secondary-color); color: white; }
-.btn.secondary:hover { background-color: #5a6268; }
+.btn.primary { 
+    background-color: var(--primary-color); 
+    color: white; 
+}
+
+.btn.primary:hover { 
+    background-color: #357abd; 
+}
+
+.btn.secondary { 
+    background-color: var(--secondary-color); 
+    color: white; 
+}
+
+.btn.secondary:hover { 
+    background-color: #5a6268; 
+}
