@@ -63,45 +63,91 @@ const btnCopyReport = document.getElementById("btn-copy-report");
 const btnRestart = document.getElementById("btn-restart");
 const finalPraise = document.getElementById("final-praise");
 
-// 안전 로딩 메커니즘 가동
-window.addEventListener("load", () => {
+// 안전 로딩 가동 (HTML/데이터가 다 준비되면 실행)
+window.addEventListener("DOMContentLoaded", () => {
     initEngine();
 });
 
 function initEngine() {
-    // 윈도우 로드가 끝난 시점에 단어장이 정의되어 있는지 더 꼼꼼히 확인합니다
+    // words.js의 변수가 성공적으로 들어왔는지 최종 체크
     if (typeof UNIT_TITLE !== 'undefined' && typeof VOCAB_DATA !== 'undefined') {
         unitTitleEl.textContent = UNIT_TITLE;
         currentWords = [...VOCAB_DATA];
         totalWordsCount = currentWords.length;
         totalCountTxts.forEach(el => el.textContent = totalWordsCount);
     } else {
-        unitTitleEl.textContent = "⚠️ 데이터 연결을 재시도 중입니다. (Ctrl+F5를 눌러주세요)";
-        // 0.5초 뒤 마지막 백업 시도
-        setTimeout(initEngine, 500);
+        unitTitleEl.textContent = "⚠️ 단어 데이터를 구성하는 중입니다... (새로고침 해주세요)";
+        setTimeout(initEngine, 300); // 실패 시 0.3초 단위로 백업 추적 가동
     }
 }
 
+// 🔊 학생들이 환호할 실감나는 오디오 주파수 튜닝 기법
 function playSound(type) {
-    if (!window.AudioContext && !window.webkitAudioContext) return;
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    if (type === 'correct') {
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime); 
-        osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1); 
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.25);
-    } else if (type === 'wrong') {
-        osc.frequency.setValueAtTime(220.00, ctx.currentTime); 
-        osc.frequency.setValueAtTime(146.83, ctx.currentTime + 0.15); 
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.35);
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        if (type === 'correct') {
+            // 청아한 2음절 띵동 소리 연출
+            const now = ctx.currentTime;
+            
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(523.25, now); // 도 (C5)
+            gain1.gain.setValueAtTime(0.15, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.15);
+            
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(659.25, now + 0.08); // 미 (E5)
+            gain2.gain.setValueAtTime(0.15, now + 0.08);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.08);
+            osc2.stop(now + 0.3);
+            
+        } else if (type === 'wrong') {
+            // 게임오버 느낌의 우우웅~ 효과음
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth'; // 둔탁한 소리 유도
+            osc.frequency.setValueAtTime(180.00, now);
+            osc.frequency.linearRampToValueAtTime(110.00, now + 0.4); // 주파수 하강 효과
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.45);
+            
+        } else if (type === 'victory') {
+            // 최종 성공 시 레트로 게임 클리어 효과음
+            const now = ctx.currentTime;
+            const notes = [523.25, 587.33, 659.25, 783.99, 1046.50]; // 도 레 미 솔 도
+            notes.forEach((freq, index) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + (index * 0.08));
+                gain.gain.setValueAtTime(0.12, now + (index * 0.08));
+                gain.gain.exponentialRampToValueAtTime(0.001, now + (index * 0.08) + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + (index * 0.08));
+                osc.stop(now + (index * 0.08) + 0.2);
+            });
+        }
+    } catch (e) {
+        console.log("Audio play error context:", e);
     }
 }
 
@@ -115,7 +161,7 @@ btnStartApp.addEventListener("click", () => {
     }
     
     if (currentWords.length === 0) {
-        alert("아직 단어 데이터가 준비되지 않았습니다. 잠시만 기다려주세요.");
+        alert("데이터 로딩 중입니다. 잠시 후 다시 클릭해 주세요!");
         return;
     }
     
@@ -139,7 +185,7 @@ function speak(text) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-US';
-        utterance.rate = 0.85;
+        utterance.rate = 0.88;
         window.speechSynthesis.speak(utterance);
     }
 }
@@ -155,10 +201,10 @@ function showWordCard() {
     studyExample.textContent = current.example;
     
     btnPrev.disabled = currentIndex === 0;
-    btnNextWord.textContent = (currentIndex === totalWordsCount - 1) ? "2단계 객관식 퀴즈 풀기 ➔" : "다음 단어 ➔";
+    btnNextWord.textContent = (currentIndex === totalWordsCount - 1) ? "2단계 객관식 퀴즈 풀기 시작! ➔" : "다음 단어 ➔";
     
     updateProgressBar();
-    setTimeout(() => { speak(current.word); }, 100);
+    setTimeout(() => { speak(current.word); }, 150);
 }
 
 btnSpeak.addEventListener("click", (e) => { e.stopPropagation(); speak(currentWords[currentIndex].word); });
@@ -187,7 +233,7 @@ function showQuizQuestion() {
     appContainer.className = "app-container";
     
     if (appMode === "wrongReview") {
-        quizBadge.textContent = "🔄 2단계: 틀린 오답 집중 재점검 중";
+        quizBadge.textContent = "🔄 2단계: 틀린 오답 집중 마스터 트레이닝";
         quizBadge.style.backgroundColor = "#fee2e2";
         quizBadge.style.color = "var(--danger-color)";
     } else {
@@ -222,11 +268,11 @@ function updateCombo(isCorrect) {
         currentCombo++;
         if (currentCombo > maxCombo) maxCombo = currentCombo;
         comboBadge.textContent = `🔥 ${currentCombo} COMBO!`;
-        comboBadge.style.transform = "scale(1.2)";
+        comboBadge.style.transform = "scale(1.25)";
         setTimeout(() => comboBadge.style.transform = "scale(1)", 150);
     } else {
         currentCombo = 0;
-        comboBadge.textContent = `💥 COMBO 깨짐!`;
+        comboBadge.textContent = `💥 COMBO 리셋!`;
     }
 }
 
@@ -238,7 +284,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
         selectedBtn.classList.add("correct");
         appContainer.classList.add("correct-flash");
         quizFeedback.style.color = "var(--success-color)";
-        quizFeedback.textContent = "⭕ 정답입니다! 완벽해요!";
+        quizFeedback.textContent = "⭕ 완벽한 정답입니다! 지식이 +1 상승했습니다.";
         playSound('correct');
         updateCombo(true);
         speak(currentObj.word);
@@ -246,7 +292,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
         selectedBtn.classList.add("wrong");
         appContainer.classList.add("wrong-flash");
         quizFeedback.style.color = "var(--danger-color)";
-        quizFeedback.textContent = `❌ 정답은 [ ${currentObj.word} ] 입니다`;
+        quizFeedback.textContent = `❌ 아쉽습니다! 정답은 [ ${currentObj.word} ]`;
         playSound('wrong');
         updateCombo(false);
         buttons.forEach(btn => { if (btn.textContent === currentObj.word) btn.classList.add("correct"); });
@@ -259,7 +305,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
             showQuizQuestion();
         } else {
             if (wrongAnswers.length > 0) {
-                alert(`💡 오답이 ${wrongAnswers.length}개 있습니다! 만점을 위해 완벽 마스터 재도전 단계로 이동합니다.`);
+                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 발견되었습니다. 걱정 마세요, 무한 복습으로 해결 가능합니다!`);
                 appMode = "wrongReview";
                 quizQueue = [...wrongAnswers];
                 wrongAnswers = []; 
@@ -304,7 +350,7 @@ function checkSpellingAnswer() {
     if (userInput === correctAnswer) {
         appContainer.classList.add("correct-flash");
         spellFeedback.style.color = "var(--success-color)";
-        spellFeedback.textContent = "⭕ 정답 타이핑 성공!";
+        spellFeedback.textContent = "⭕ 대단해요! 정확한 스펠링입니다.";
         playSound('correct');
         updateCombo(true);
         speak(quizQueue[currentIndex].word);
@@ -319,7 +365,7 @@ function checkSpellingAnswer() {
     } else {
         appContainer.classList.add("wrong-flash");
         spellFeedback.style.color = "var(--danger-color)";
-        spellFeedback.textContent = `❌ 오답! 정답은 [ ${quizQueue[currentIndex].word} ]`;
+        spellFeedback.textContent = `❌ 오답! 올바른 철자는 [ ${quizQueue[currentIndex].word} ] 입니다.`;
         playSound('wrong');
         updateCombo(false);
         setTimeout(() => {
@@ -329,7 +375,7 @@ function checkSpellingAnswer() {
             } else {
                 showFinalResult();
             }
-        }, 2200);
+        }, 2500);
     }
 }
 
@@ -348,11 +394,13 @@ function showFinalResult() {
     reportUnit.textContent = UNIT_TITLE;
     if(reportCombo) reportCombo.textContent = maxCombo;
     
+    playSound('victory'); // 🎉 축하 승리 사운드 가동
+    
     const praises = [
-        "🎉 영어 어휘 마스터의 탄생을 축하합니다!",
-        "🚀 엄청난 집중력으로 단어를 완전히 점령했습니다!",
-        "🏅 완벽한 실력입니다! 수행평가 만점 예약!",
-        "✨ 지치지 않는 열정에 큰 박수를 보냅니다!"
+        "👑 명예의 전당 등극! 단어의 신이 나타났습니다!",
+        "🚀 역대급 집중력! 단원 올클리어에 성공했습니다!",
+        "🏅 완벽한 성적입니다. 어휘 수행평가는 완전히 프리패스!",
+        "✨ 지치지 않는 집중 레이스 완주를 격하게 축하합니다!"
     ];
     if(finalPraise) finalPraise.textContent = praises[Math.floor(Math.random() * praises.length)];
     
@@ -364,18 +412,18 @@ function showFinalResult() {
 
 function generateSecureCode(id, name, unit, combo) {
     let hash = 0;
-    const secureString = `${id}_${name}_${unit}_${combo}_2026_Smart`;
+    const secureString = `${id}_${name}_${unit}_${combo}_2026_Final`;
     for (let i = 0; i < secureString.length; i++) {
         hash = (hash << 5) - hash + secureString.charCodeAt(i);
         hash |= 0;
     }
-    return "MASTER-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
+    return "CHAMP-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
 
 btnCopyReport.addEventListener("click", () => {
     const textToCopy = document.getElementById("cert-code-box").innerText;
     navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("📋 과제 확인서 내용이 성공적으로 복사되었습니다!\n구글 클래스룸이나 패들렛에 그대로 붙여넣기(Ctrl+V) 하세요.");
+        alert("📋 미션 수행 인증서가 복사되었습니다!\n학급 과제방에 그대로 붙여넣기(Ctrl+V) 하세요.");
     });
 });
 
