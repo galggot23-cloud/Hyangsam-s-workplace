@@ -3,21 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>중3 영어 단원별 어휘 학습기</title>
+    <title>Lesson 4 어휘 완전 마스터 프로그램 v2.5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1 id="unit-title">Lesson 1. New Beginnings</h1>
+            <h1 id="unit-title">Lesson 4. Smart Spending</h1>
+            <div id="student-info-badge" class="student-info-badge hidden">
+                👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 학생
+            </div>
             <div class="progress-bar-container">
                 <div id="progress-bar" style="width: 0%;"></div>
             </div>
         </header>
 
         <main>
-            <section id="step-study" class="card-section">
-                <div class="step-badge">1단계: 단어 암기</div>
+            <section id="step-login" class="card-section">
+                <div class="step-badge">시스템 접속</div>
+                <div class="login-box">
+                    <h2>영어 어휘 학습기 시작하기</h2>
+                    <p class="login-desc">학습 이력 기록 및 인증서 발급을 위해 정보를 입력하세요.</p>
+                    
+                    <div class="input-field">
+                        <label for="input-student-id">학번 (예: 30101)</label>
+                        <input type="text" id="input-student-id" placeholder="5자리 학번 입력" autocomplete="off">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="input-student-name">이름</label>
+                        <input type="text" id="input-student-name" placeholder="이름 입력" autocomplete="off">
+                    </div>
+                    
+                    <button id="btn-start-app" class="btn primary large">학습 시작하기 ➔</button>
+                </div>
+            </section>
+
+            <section id="step-study" class="card-section hidden">
+                <div class="step-badge">1단계: 단어 암기 및 발음</div>
                 <div class="flashcard" id="flashcard">
                     <div class="card-front">
                         <div class="word-audio-wrapper">
@@ -28,7 +51,7 @@
                     </div>
                     <div class="card-back">
                         <span class="example-tag">Example Sentence</span>
-                        <p id="study-example"><i>예문이 들어갑니다.</i></p>
+                        <p id="study-example"><i>예문</i></p>
                     </div>
                 </div>
                 <div class="hint-text">카드를 클릭하면 예문을 확인할 수 있습니다.</div>
@@ -39,22 +62,54 @@
             </section>
 
             <section id="step-quiz" class="card-section hidden">
-                <div class="step-badge">2단계: 영영 퀴즈 도전</div>
+                <div class="step-badge" id="quiz-badge">2단계: 영영 뜻풀이 퀴즈</div>
                 <div class="quiz-question">
-                    <h2 id="quiz-definition" class="definition-text">English definition goes here.</h2>
+                    <h2 id="quiz-definition" class="definition-text">Definition</h2>
                     <p class="quiz-instruction">위 뜻풀이에 알맞은 영어 단어를 고르세요.</p>
                 </div>
-                <div class="quiz-options" id="quiz-options">
-                    </div>
+                <div class="quiz-options" id="quiz-options"></div>
                 <div id="quiz-feedback" class="feedback-text"></div>
             </section>
 
+            <section id="step-spelling" class="card-section hidden">
+                <div class="step-badge">3단계: 완전 완성! 철자 쓰기 테스트</div>
+                <div class="quiz-question">
+                    <h2 id="spell-definition" class="definition-text">Definition</h2>
+                    <p class="quiz-instruction" id="spell-hint-meaning">한글 뜻 힌트</p>
+                </div>
+                <div class="spell-input-wrapper">
+                    <input type="text" id="spell-input" placeholder="영어 단어 타이핑" autocomplete="off" spellcheck="false">
+                    <button id="btn-spell-submit" class="btn primary">제출</button>
+                </div>
+                <div id="spell-feedback" class="feedback-text"></div>
+            </section>
+
             <section id="step-result" class="card-section hidden">
-                <div class="step-badge">3단계: 학습 완료</div>
+                <div class="step-badge success">4단계: 학습 완료 및 최종 성적 검증</div>
                 <div class="result-container">
-                    <h2>수고하셨습니다!</h2>
-                    <p class="score-text">맞춘 개수: <span id="final-score">0</span> / <span id="total-words">0</span></p>
-                    <button id="btn-restart" class="btn primary">처음부터 다시 하기</button>
+                    <h2 class="congratulations">🎉 Lesson 4 어휘 완벽 클리어!</h2>
+                    <p class="score-text">종합 성취도: 100% 만점 달성 완료</p>
+                    
+                    <div class="teacher-verification-box">
+                        <h3>📋 교사 제출용 수행평가 인증서</h3>
+                        <p class="verification-desc">아래의 내용을 전체 복사(드래그)하여 학급 과제방에 제출하세요.</p>
+                        
+                        <div class="cert-code-box" id="cert-code-box">
+                            ====================================<br>
+                            [어휘 학습 수행평가 완료 인증서]<br>
+                            ====================================<br>
+                            ■ 학생 정보: <span id="report-id"></span> <span id="report-name"></span><br>
+                            ■ 학습 단원: Lesson 4. Smart Spending<br>
+                            ■ 학습 일시: <span id="report-date"></span><br>
+                            ■ 객관식 퀴즈: 22문항 오답 복습 완료 (Pass)<br>
+                            ■ 주관식 스펠링: 22문항 전체 정확 통과 (Pass)<br>
+                            ■ 위변조 방지 코드: <span id="report-hash" class="code-highlight"></span><br>
+                            ====================================
+                        </div>
+                        <button id="btn-copy-report" class="btn accent">인증서 내용 복사하기</button>
+                    </div>
+
+                    <button id="btn-restart" class="btn secondary">처음부터 다시 학습하기</button>
                 </div>
             </section>
         </main>
