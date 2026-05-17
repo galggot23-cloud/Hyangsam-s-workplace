@@ -9,11 +9,16 @@ let isFlipped = false;
 let appMode = "login";     
 let totalWordsCount = 0;
 
+// 동기부여 요소 변수
+let currentCombo = 0;
+let maxCombo = 0;
+
 // DOM 맵핑
 const appContainer = document.querySelector(".app-container");
 const unitTitleEl = document.getElementById("unit-title");
 const progressBar = document.getElementById("progress-bar");
 const studentBadge = document.getElementById("student-info-badge");
+const comboBadge = document.getElementById("combo-badge");
 const displayID = document.getElementById("display-student-id");
 const displayName = document.getElementById("display-student-name");
 
@@ -52,20 +57,50 @@ const reportId = document.getElementById("report-id");
 const reportName = document.getElementById("report-name");
 const reportUnit = document.getElementById("report-unit");
 const reportDate = document.getElementById("report-date");
+const reportCombo = document.getElementById("report-combo");
 const reportHash = document.getElementById("report-hash");
 const btnCopyReport = document.getElementById("btn-copy-report");
 const btnRestart = document.getElementById("btn-restart");
+const finalPraise = document.getElementById("final-praise");
 
-// 초기 실행 환경 구성
+// [에러 해결] 브라우저가 화면 요소를 다 그리고 words.js 준비가 끝나면 안전하게 시작하도록 바인딩
+document.addEventListener("DOMContentLoaded", () => {
+    initEngine();
+});
+
 function initEngine() {
-    // words.js에 선언된 변수를 보안 우회하여 즉시 주입
+    // words.js의 변수가 로드되었는지 최종 검증 후 주입
     if (typeof UNIT_TITLE !== 'undefined' && typeof VOCAB_DATA !== 'undefined') {
         unitTitleEl.textContent = UNIT_TITLE;
         currentWords = [...VOCAB_DATA];
         totalWordsCount = currentWords.length;
         totalCountTxts.forEach(el => el.textContent = totalWordsCount);
     } else {
-        unitTitleEl.textContent = "단어장 로드 오류! (words.js를 확인하세요)";
+        unitTitleEl.textContent = "⚠️ words.js 파일 로딩 오류! 새로고침 해주세요.";
+    }
+}
+
+// 게임 효과음 오디오 생성 장치 (외부 파일 없이 브라우저 내장 주파수 활용)
+function playSound(type) {
+    if (!window.AudioContext && !window.webkitAudioContext) return;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (type === 'correct') {
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // 레
+        osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1); // 라
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+    } else if (type === 'wrong') {
+        osc.frequency.setValueAtTime(220.00, ctx.currentTime); // 라
+        osc.frequency.setValueAtTime(146.83, ctx.currentTime + 0.15); // 레
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
     }
 }
 
@@ -74,7 +109,7 @@ btnStartApp.addEventListener("click", () => {
     studentName = inputName.value.trim();
     
     if (!studentID || !studentName) {
-        alert("학번과 이름을 입력해야 시작할 수 있습니다!");
+        alert("학번과 이름을 입력해야 챌린지를 시작할 수 있습니다!");
         return;
     }
     
@@ -87,6 +122,8 @@ btnStartApp.addEventListener("click", () => {
     
     currentIndex = 0;
     wrongAnswers = [];
+    currentCombo = 0;
+    maxCombo = 0;
     appMode = "study";
     showWordCard();
 });
@@ -127,6 +164,7 @@ btnNextWord.addEventListener("click", () => {
         showWordCard();
     } else {
         appMode = "quiz";
+        comboBadge.classList.remove("hidden");
         quizQueue = [...currentWords];
         shuffleArray(quizQueue);
         currentIndex = 0;
@@ -172,6 +210,19 @@ function showQuizQuestion() {
     updateProgressBar();
 }
 
+function updateCombo(isCorrect) {
+    if (isCorrect) {
+        currentCombo++;
+        if (currentCombo > maxCombo) maxCombo = currentCombo;
+        comboBadge.textContent = `🔥 ${currentCombo} COMBO!`;
+        comboBadge.style.transform = "scale(1.2)";
+        setTimeout(() => comboBadge.style.transform = "scale(1)", 150);
+    } else {
+        currentCombo = 0;
+        comboBadge.textContent = `💥 COMBO 깨짐!`;
+    }
+}
+
 function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
     const buttons = quizOptions.querySelectorAll(".option-btn");
     buttons.forEach(btn => btn.disabled = true);
@@ -180,13 +231,17 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
         selectedBtn.classList.add("correct");
         appContainer.classList.add("correct-flash");
         quizFeedback.style.color = "var(--success-color)";
-        quizFeedback.textContent = "⭕ 정답입니다! (Good Job!)";
+        quizFeedback.textContent = "⭕ 정답입니다! 완벽해요!";
+        playSound('correct');
+        updateCombo(true);
         speak(currentObj.word);
     } else {
         selectedBtn.classList.add("wrong");
         appContainer.classList.add("wrong-flash");
         quizFeedback.style.color = "var(--danger-color)";
-        quizFeedback.textContent = `❌ 오답! 정답은 [ ${currentObj.word} ]`;
+        quizFeedback.textContent = `❌ 정답은 [ ${currentObj.word} ] 입니다`;
+        playSound('wrong');
+        updateCombo(false);
         buttons.forEach(btn => { if (btn.textContent === currentObj.word) btn.classList.add("correct"); });
         if (!wrongAnswers.some(w => w.word === currentObj.word)) wrongAnswers.push(currentObj);
     }
@@ -197,7 +252,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
             showQuizQuestion();
         } else {
             if (wrongAnswers.length > 0) {
-                alert(`틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 마스터를 위해 오답 복습 단계로 넘어갑니다.`);
+                alert(`💡 오답이 ${wrongAnswers.length}개 있습니다! 만점을 위해 완벽 마스터 재도전 단계로 이동합니다.`);
                 appMode = "wrongReview";
                 quizQueue = [...wrongAnswers];
                 wrongAnswers = []; 
@@ -213,7 +268,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
                 showSpellingQuestion();
             }
         }
-    }, 1600);
+    }, 1500);
 }
 
 function showSpellingQuestion() {
@@ -242,7 +297,9 @@ function checkSpellingAnswer() {
     if (userInput === correctAnswer) {
         appContainer.classList.add("correct-flash");
         spellFeedback.style.color = "var(--success-color)";
-        spellFeedback.textContent = "⭕ 철자 일치! 정답입니다.";
+        spellFeedback.textContent = "⭕ 정답 타이핑 성공!";
+        playSound('correct');
+        updateCombo(true);
         speak(quizQueue[currentIndex].word);
         setTimeout(() => {
             if (currentIndex < quizQueue.length - 1) {
@@ -255,7 +312,9 @@ function checkSpellingAnswer() {
     } else {
         appContainer.classList.add("wrong-flash");
         spellFeedback.style.color = "var(--danger-color)";
-        spellFeedback.textContent = `❌ 틀렸습니다! 정답은 [ ${quizQueue[currentIndex].word} ] 입니다.`;
+        spellFeedback.textContent = `❌ 오답! 정답은 [ ${quizQueue[currentIndex].word} ]`;
+        playSound('wrong');
+        updateCombo(false);
         setTimeout(() => {
             if (currentIndex < quizQueue.length - 1) {
                 currentIndex++;
@@ -263,7 +322,7 @@ function checkSpellingAnswer() {
             } else {
                 showFinalResult();
             }
-        }, 2500);
+        }, 2200);
     }
 }
 
@@ -273,33 +332,44 @@ spellInput.addEventListener("keyup", (e) => { if (e.key === "Enter") checkSpelli
 function showFinalResult() {
     appMode = "result";
     appContainer.className = "app-container";
+    comboBadge.classList.add("hidden");
     stepSpellingSection.classList.add("hidden");
     stepResultSection.classList.remove("hidden");
     
     reportId.textContent = studentID;
     reportName.textContent = studentName;
     reportUnit.textContent = UNIT_TITLE;
+    reportCombo.textContent = maxCombo;
+    
+    // 학생 칭찬 시스템
+    const praises = [
+        "🎉 영어 어휘 마스터의 탄생을 축하합니다!",
+        "🚀 엄청난 집중력으로 단어를 완전히 점령했습니다!",
+        "🏅 완벽한 실력입니다! 수행평가 만점 예약!",
+        "✨ 지치지 않는 열정에 큰 박수를 보냅니다!"
+    ];
+    finalPraise.textContent = praises[Math.floor(Math.random() * praises.length)];
     
     const now = new Date();
-    reportDate.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    reportHash.textContent = generateSecureCode(studentID, studentName, UNIT_TITLE);
+    reportDate.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')} ${String(now.getMinutes()).padStart(2,'0')}`;
+    reportHash.textContent = generateSecureCode(studentID, studentName, UNIT_TITLE, maxCombo);
     updateProgressBar();
 }
 
-function generateSecureCode(id, name, unit) {
+function generateSecureCode(id, name, unit, combo) {
     let hash = 0;
-    const secureString = `${id}_${name}_${unit}_2026_Verif`;
+    const secureString = `${id}_${name}_${unit}_${combo}_2026_Smart`;
     for (let i = 0; i < secureString.length; i++) {
         hash = (hash << 5) - hash + secureString.charCodeAt(i);
         hash |= 0;
     }
-    return "OK-SIGN-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
+    return "MASTER-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
 
 btnCopyReport.addEventListener("click", () => {
     const textToCopy = document.getElementById("cert-code-box").innerText;
     navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("📋 과제 확인서가 클립보드에 복사되었습니다!\n클래스룸이나 패들렛에 그대로 붙여넣기(Ctrl+V) 하세요.");
+        alert("📋 과제 확인서 내용이 성공적으로 복사되었습니다!\n구글 클래스룸이나 패들렛에 그대로 붙여넣기(Ctrl+V) 하세요.");
     });
 });
 
@@ -327,6 +397,3 @@ btnRestart.addEventListener("click", () => {
     appMode = "login";
     updateProgressBar();
 });
-
-// 엔진 시동
-initEngine();
