@@ -16,6 +16,7 @@
             <div id="student-info-badge" class="student-info-badge hidden">
                 👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 학생 학습 중
             </div>
+            <div id="combo-badge" class="combo-badge hidden">🔥 0 COMBO!</div>
             <div class="progress-bar-container">
                 <div id="progress-bar" style="width: 0%;"></div>
             </div>
@@ -25,7 +26,7 @@
             <section id="step-login" class="card-section">
                 <div class="step-badge">시스템 접속</div>
                 <div class="login-box">
-                    <h2>영어 어휘 학습기 시작하기</h2>
+                    <h2>영어 어휘 미션 챌린지 🚀</h2>
                     <p class="login-desc">학습 이력 기록 및 인증서 발급을 위해 정보를 입력하세요.</p>
                     <div class="input-field">
                         <label for="input-student-id">학번 (예: 30101)</label>
@@ -35,7 +36,7 @@
                         <label for="input-student-name">이름</label>
                         <input type="text" id="input-student-name" placeholder="이름 입력" autocomplete="off">
                     </div>
-                    <button id="btn-start-app" class="btn primary large">학습 시작하기 ➔</button>
+                    <button id="btn-start-app" class="btn primary large">🔥 미션 스타트! ➔</button>
                 </div>
             </section>
 
@@ -85,10 +86,10 @@
             </section>
 
             <section id="step-result" class="card-section hidden">
-                <div class="step-badge success">🏅 4단계: 학습 완료 및 최종 성적 검증</div>
+                <div class="step-badge success">🏅 4단계: 최종 어휘 마스터 인증</div>
                 <div class="result-container">
-                    <h2 class="congratulations">🎉 모든 어휘 미션 완벽 클리어!</h2>
-                    <p class="score-text">종합 성취도: 100% 만점 달성 완료</p>
+                    <h2 class="congratulations" id="final-praise">🎉 훌륭합니다!</h2>
+                    <p class="score-text">종합 성취도: 100% 미션 클리어 완료 ⚡</p>
                     
                     <div class="teacher-verification-box">
                         <h3>📋 교사 제출용 수행평가 확인서</h3>
@@ -102,12 +103,13 @@
                             ■ 학습 일시: <span id="report-date"></span><br>
                             ■ 객관식 퀴즈: 오답 무한 복습 완료 (Pass)<br>
                             ■ 주관식 스펠링: 전체 정확 타이핑 통과 (Pass)<br>
+                            ■ 최고 연속 정답: <span id="report-combo"></span> 콤보 달성!<br>
                             ■ 위변조 방지 코드: <span id="report-hash" class="code-highlight"></span><br>
                             ====================================
                         </div>
                         <button id="btn-copy-report" class="btn accent">인증서 내용 자동 복사하기</button>
                     </div>
-                    <button id="btn-restart" class="btn secondary">처음부터 다시 학습하기</button>
+                    <button id="btn-restart" class="btn secondary">한 번 더 도전하기 🔄</button>
                 </div>
             </section>
         </main>
