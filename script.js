@@ -63,24 +63,25 @@ const btnCopyReport = document.getElementById("btn-copy-report");
 const btnRestart = document.getElementById("btn-restart");
 const finalPraise = document.getElementById("final-praise");
 
-// [에러 해결] 브라우저가 화면 요소를 다 그리고 words.js 준비가 끝나면 안전하게 시작하도록 바인딩
-document.addEventListener("DOMContentLoaded", () => {
+// 안전 로딩 메커니즘 가동
+window.addEventListener("load", () => {
     initEngine();
 });
 
 function initEngine() {
-    // words.js의 변수가 로드되었는지 최종 검증 후 주입
+    // 윈도우 로드가 끝난 시점에 단어장이 정의되어 있는지 더 꼼꼼히 확인합니다
     if (typeof UNIT_TITLE !== 'undefined' && typeof VOCAB_DATA !== 'undefined') {
         unitTitleEl.textContent = UNIT_TITLE;
         currentWords = [...VOCAB_DATA];
         totalWordsCount = currentWords.length;
         totalCountTxts.forEach(el => el.textContent = totalWordsCount);
     } else {
-        unitTitleEl.textContent = "⚠️ words.js 파일 로딩 오류! 새로고침 해주세요.";
+        unitTitleEl.textContent = "⚠️ 데이터 연결을 재시도 중입니다. (Ctrl+F5를 눌러주세요)";
+        // 0.5초 뒤 마지막 백업 시도
+        setTimeout(initEngine, 500);
     }
 }
 
-// 게임 효과음 오디오 생성 장치 (외부 파일 없이 브라우저 내장 주파수 활용)
 function playSound(type) {
     if (!window.AudioContext && !window.webkitAudioContext) return;
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -90,14 +91,14 @@ function playSound(type) {
     gain.connect(ctx.destination);
 
     if (type === 'correct') {
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // 레
-        osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1); // 라
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); 
+        osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1); 
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         osc.start();
         osc.stop(ctx.currentTime + 0.25);
     } else if (type === 'wrong') {
-        osc.frequency.setValueAtTime(220.00, ctx.currentTime); // 라
-        osc.frequency.setValueAtTime(146.83, ctx.currentTime + 0.15); // 레
+        osc.frequency.setValueAtTime(220.00, ctx.currentTime); 
+        osc.frequency.setValueAtTime(146.83, ctx.currentTime + 0.15); 
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         osc.start();
         osc.stop(ctx.currentTime + 0.35);
@@ -110,6 +111,11 @@ btnStartApp.addEventListener("click", () => {
     
     if (!studentID || !studentName) {
         alert("학번과 이름을 입력해야 챌린지를 시작할 수 있습니다!");
+        return;
+    }
+    
+    if (currentWords.length === 0) {
+        alert("아직 단어 데이터가 준비되지 않았습니다. 잠시만 기다려주세요.");
         return;
     }
     
@@ -164,7 +170,7 @@ btnNextWord.addEventListener("click", () => {
         showWordCard();
     } else {
         appMode = "quiz";
-        comboBadge.classList.remove("hidden");
+        if(comboBadge) comboBadge.classList.remove("hidden");
         quizQueue = [...currentWords];
         shuffleArray(quizQueue);
         currentIndex = 0;
@@ -211,6 +217,7 @@ function showQuizQuestion() {
 }
 
 function updateCombo(isCorrect) {
+    if(!comboBadge) return;
     if (isCorrect) {
         currentCombo++;
         if (currentCombo > maxCombo) maxCombo = currentCombo;
@@ -332,26 +339,25 @@ spellInput.addEventListener("keyup", (e) => { if (e.key === "Enter") checkSpelli
 function showFinalResult() {
     appMode = "result";
     appContainer.className = "app-container";
-    comboBadge.classList.add("hidden");
+    if(comboBadge) comboBadge.classList.add("hidden");
     stepSpellingSection.classList.add("hidden");
     stepResultSection.classList.remove("hidden");
     
     reportId.textContent = studentID;
     reportName.textContent = studentName;
     reportUnit.textContent = UNIT_TITLE;
-    reportCombo.textContent = maxCombo;
+    if(reportCombo) reportCombo.textContent = maxCombo;
     
-    // 학생 칭찬 시스템
     const praises = [
         "🎉 영어 어휘 마스터의 탄생을 축하합니다!",
         "🚀 엄청난 집중력으로 단어를 완전히 점령했습니다!",
         "🏅 완벽한 실력입니다! 수행평가 만점 예약!",
         "✨ 지치지 않는 열정에 큰 박수를 보냅니다!"
     ];
-    finalPraise.textContent = praises[Math.floor(Math.random() * praises.length)];
+    if(finalPraise) finalPraise.textContent = praises[Math.floor(Math.random() * praises.length)];
     
     const now = new Date();
-    reportDate.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')} ${String(now.getMinutes()).padStart(2,'0')}`;
+    reportDate.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     reportHash.textContent = generateSecureCode(studentID, studentName, UNIT_TITLE, maxCombo);
     updateProgressBar();
 }
