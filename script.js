@@ -53,15 +53,6 @@ const btnSpellSubmit = document.getElementById("btn-spell-submit");
 const spellFeedback = document.getElementById("spell-feedback");
 
 const stepResultSection = document.getElementById("step-result");
-const reportId = document.getElementById("report-id");
-const reportName = document.getElementById("report-name");
-const reportUnit = document.getElementById("report-unit");
-const reportDate = document.getElementById("report-date");
-const reportCombo = document.getElementById("report-combo");
-const reportHash = document.getElementById("report-hash");
-const btnCopyReport = document.getElementById("btn-copy-report");
-const btnRestart = document.getElementById("btn-restart");
-const finalPraise = document.getElementById("final-praise");
 
 // [초강력 방어 메커니즘] 어떤 상황에서든 화면을 강제로 깨우는 엔진
 window.addEventListener("load", () => {
@@ -69,13 +60,12 @@ window.addEventListener("load", () => {
 });
 
 function forceStartEngine() {
-    // 1단계 안전장치: 단어장 파일 이름이 word든 words든 상관없이 존재하는 데이터 강제 연결
     if (typeof VOCAB_DATA !== 'undefined' && typeof UNIT_TITLE !== 'undefined') {
         executeInitialization(UNIT_TITLE, VOCAB_DATA);
         return;
     }
     
-    // 2단계 안전장치: 만약 깃허브 서버가 예전 에러 코드를 기억하며 버틴다면, 아래에 교사 원본 데이터를 직접 심어서 강제 주입해버립니다!
+    // 백업 데이터 자동 작동 구조
     const BACKUP_TITLE = "Lesson 4. Be a Smart Spender";
     const BACKUP_DATA = [
         { word: "spender", meaning: "돈을 쓰는 사람", definition: "someone who spends money", example: "Tourists are big spenders." },
@@ -106,13 +96,14 @@ function forceStartEngine() {
 }
 
 function executeInitialization(title, data) {
+    window.GLOBAL_UNIT_TITLE = title; // 전역 스코프 안전 백업
     unitTitleEl.textContent = title;
     currentWords = [...data];
     totalWordsCount = currentWords.length;
     totalCountTxts.forEach(el => el.textContent = totalWordsCount);
 }
 
-// 🔊 학생들이 환호할 고품질 이펙트 사운드 주파수 웹오디오 가동
+// 🔊 효과음 시스템
 function playSound(type) {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -121,7 +112,6 @@ function playSound(type) {
         const now = ctx.currentTime;
         
         if (type === 'correct') {
-            // 맑은 하이톤의 띵동~!
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
             osc1.type = 'sine';
@@ -141,7 +131,6 @@ function playSound(type) {
             osc2.start(now + 0.07); osc2.stop(now + 0.3);
             
         } else if (type === 'wrong') {
-            // 게임오버 느낌의 우웅~ 웅장한 진동음
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'triangle';
@@ -153,7 +142,6 @@ function playSound(type) {
             osc.start(now); osc.stop(now + 0.4);
             
         } else if (type === 'victory') {
-            // 최종 성공 미션 클리어 브금 효과음
             const notes = [523.25, 587.33, 659.25, 783.99, 1046.50];
             notes.forEach((freq, index) => {
                 const osc = ctx.createOscillator();
@@ -318,7 +306,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
             showQuizQuestion();
         } else {
             if (wrongAnswers.length > 0) {
-                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 발견되었습니다. 완벽한 마스터를 위해 무한 복습 라운드가 시작됩니다!`);
+                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 발견되었습니다. 완벽한 마스터를 위해 오답 복습이 시작됩니다.`);
                 appMode = "wrongReview";
                 quizQueue = [...wrongAnswers];
                 wrongAnswers = []; 
@@ -392,9 +380,7 @@ function checkSpellingAnswer() {
     }
 }
 
-btnSpellSubmit.addEventListener("click", checkSpellingAnswer);
-spellInput.addEventListener("keyup", (e) => { if (e.key === "Enter") checkSpellingAnswer(); });
-
+// [핵심 오작동 수정] 결과 화면 출력 메커니즘 전면 보강
 function showFinalResult() {
     appMode = "result";
     appContainer.className = "app-container";
@@ -402,12 +388,23 @@ function showFinalResult() {
     stepSpellingSection.classList.add("hidden");
     stepResultSection.classList.remove("hidden");
     
-    reportId.textContent = studentID;
-    reportName.textContent = studentName;
-    reportUnit.textContent = UNIT_TITLE;
-    if(reportCombo) reportCombo.textContent = maxCombo;
+    // HTML에 선언된 ID들과 100% 일치하도록 직접 맵핑 매칭
+    const reportIdEl = document.getElementById("report-id");
+    const reportNameEl = document.getElementById("report-name");
+    const reportUnitEl = document.getElementById("report-unit");
+    const reportDateEl = document.getElementById("report-date");
+    const reportComboEl = document.getElementById("report-combo");
+    const reportHashEl = document.getElementById("report-hash");
+    const finalPraiseEl = document.getElementById("final-praise");
+
+    if (reportIdEl) reportIdEl.textContent = studentID;
+    if (reportNameEl) reportNameEl.textContent = studentName;
     
-    playSound('victory'); // 🎉 완공 브금 재생
+    const displayTitle = (typeof UNIT_TITLE !== 'undefined') ? UNIT_TITLE : window.GLOBAL_UNIT_TITLE;
+    if (reportUnitEl) reportUnitEl.textContent = displayTitle;
+    if (reportComboEl) reportComboEl.textContent = maxCombo;
+    
+    playSound('victory'); // 🎉 미션 완공 브금 작동
     
     const praises = [
         "👑 영예의 전당 등극! 단어의 신이 나타났습니다!",
@@ -415,17 +412,23 @@ function showFinalResult() {
         "🏅 완벽한 성적입니다. 어휘 수행평가는 프리패스!",
         "✨ 지치지 않는 집중 레이스 완주를 격하게 축하합니다!"
     ];
-    if(finalPraise) finalPraise.textContent = praises[Math.floor(Math.random() * praises.length)];
+    if(finalPraiseEl) finalPraiseEl.textContent = praises[Math.floor(Math.random() * praises.length)];
     
     const now = new Date();
-    reportDate.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    reportHash.textContent = generateSecureCode(studentID, studentName, UNIT_TITLE, maxCombo);
+    if (reportDateEl) {
+        reportDateEl.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+    
+    if (reportHashEl) {
+        reportHashEl.textContent = generateSecureCode(studentID, studentName, displayTitle, maxCombo);
+    }
+    
     updateProgressBar();
 }
 
 function generateSecureCode(id, name, unit, combo) {
     let hash = 0;
-    const secureString = `${id}_${name}_${unit}_${combo}_2026_Perfect`;
+    const secureString = `${id}_${name}_${unit}_${combo}_2026_Fix`;
     for (let i = 0; i < secureString.length; i++) {
         hash = (hash << 5) - hash + secureString.charCodeAt(i);
         hash |= 0;
@@ -433,14 +436,37 @@ function generateSecureCode(id, name, unit, combo) {
     return "CHAMP-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
 
-btnCopyReport.addEventListener("click", () => {
-    const textToCopy = document.getElementById("cert-code-box").innerText;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("📋 미션 수행 인증서가 복사되었습니다!\n과제 제출방에 그대로 붙여넣기(Ctrl+V) 하세요.");
+// 이벤트 리스너들 결합
+if (btnSpellSubmit) btnSpellSubmit.addEventListener("click", checkSpellingAnswer);
+if (spellInput) {
+    spellInput.addEventListener("keyup", (e) => { if (e.key === "Enter") checkSpellingAnswer(); });
+}
+
+const btnCopyReportEl = document.getElementById("btn-copy-report");
+if (btnCopyReportEl) {
+    btnCopyReportEl.addEventListener("click", () => {
+        const textToCopy = document.getElementById("cert-code-box").innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert("📋 미션 수행 인증서가 복사되었습니다!\n과제 제출방에 그대로 붙여넣기(Ctrl+V) 하세요.");
+        });
     });
-});
+}
+
+const btnRestartEl = document.getElementById("btn-restart");
+if (btnRestartEl) {
+    btnRestartEl.addEventListener("click", () => {
+        if(inputID) inputID.value = ""; 
+        if(inputName) inputName.value = "";
+        if(studentBadge) studentBadge.classList.add("hidden");
+        if(stepResultSection) stepResultSection.classList.add("hidden");
+        if(stepLoginSection) stepLoginSection.classList.remove("hidden");
+        appMode = "login";
+        updateProgressBar();
+    });
+}
 
 function updateProgressBar() {
+    if(!progressBar) return;
     let percent = 0;
     if (appMode === "study") percent = ((currentIndex) / totalWordsCount) * 33.3;
     else if (appMode === "quiz" || appMode === "wrongReview") percent = 33.3 + ((currentIndex) / quizQueue.length) * 33.3;
@@ -455,12 +481,3 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
-
-btnRestart.addEventListener("click", () => {
-    inputID.value = ""; inputName.value = "";
-    studentBadge.classList.add("hidden");
-    stepResultSection.classList.add("hidden");
-    stepLoginSection.classList.remove("hidden");
-    appMode = "login";
-    updateProgressBar();
-});
