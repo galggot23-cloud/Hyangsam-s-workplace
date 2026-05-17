@@ -3,10 +3,10 @@
 // =========================================================================
 
 // 1. 학습할 단원 타이틀 설정
-export const UNIT_TITLE = "Lesson 4. Be a Smart Spender";
+const UNIT_TITLE = "Lesson 4. Be a Smart Spender";
 
 // 2. 단어 데이터 리스트 (형식에 맞춰 자유롭게 수정/추가 가능)
-export const VOCAB_DATA = [
+const VOCAB_DATA = [
     { word: "spender", meaning: "돈을 쓰는 사람", definition: "someone who spends money", example: "Tourists are big spenders." },
     { word: "exchange", meaning: "교환하다", definition: "to give something to someone and receive something from that person", example: "My family and I exchange presents on Christmas." },
     { word: "refund", meaning: "환불", definition: "a sum of money which is returned to you", example: "The clerk is going to refund my money." },
