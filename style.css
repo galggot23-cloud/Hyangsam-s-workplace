@@ -1,14 +1,15 @@
 :root {
-    --primary-color: #4a90e2;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --bg-color: #f4f6f9;
+    --primary-color: #1e3a8a;       /* 선명한 딥 네이비 */
+    --accent-color: #0ea5e9;        /* 밝고 선명한 스카이 블루 */
+    --secondary-color: #4b5563;     /* 어두운 무채색 회색 */
+    --success-color: #059669;       /* 짙은 에메랄드 그린 */
+    --danger-color: #dc2626;        /* 선명한 레드 */
+    --bg-color: #f8fafc;            /* 매끄러운 화이트 그레이 */
     --card-color: #ffffff;
 }
 
 body {
-    font-family: 'Malgun Gothic', sans-serif;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
     background-color: var(--bg-color);
     margin: 0;
     display: flex;
@@ -19,11 +20,11 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 540px;
     background: var(--card-color);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(30, 58, 138, 0.18);
 }
 
 header {
@@ -32,22 +33,35 @@ header {
 }
 
 #unit-title {
-    font-size: 1.5rem;
-    color: #333;
+    font-size: 1.65rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-weight: 800;
+}
+
+.student-info-badge {
+    display: inline-block;
+    background-color: #f1f5f9;
+    color: var(--secondary-color);
+    padding: 4px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
     margin-bottom: 15px;
+    border: 1px solid #e2e8f0;
 }
 
 .progress-bar-container {
     width: 100%;
-    height: 8px;
-    background-color: #e9ecef;
-    border-radius: 4px;
+    height: 12px;
+    background-color: #e2e8f0;
+    border-radius: 6px;
     overflow: hidden;
 }
 
 #progress-bar {
     height: 100%;
-    background-color: var(--primary-color);
+    background-color: var(--accent-color);
     transition: width 0.3s ease;
 }
 
@@ -55,6 +69,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .hidden {
@@ -62,137 +77,179 @@ header {
 }
 
 .step-badge {
-    background-color: #e2eefd;
+    background-color: #dbeafe;
     color: var(--primary-color);
-    padding: 5px 12px;
-    border-radius: 20px;
+    padding: 6px 18px;
+    border-radius: 30px;
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    margin-bottom: 22px;
+    border: 1px solid #bfdbfe;
+}
+
+.step-badge.success {
+    background-color: #d1fae5;
+    color: var(--success-color);
+    border-color: #a7f3d0;
+}
+
+/* 학번 이름 입력 박스 */
+.login-box {
+    width: 100%;
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.login-box h2 {
+    margin: 0 0 6px 0;
+    color: #1e293b;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.login-desc {
+    font-size: 0.88rem;
+    color: #64748b;
+    text-align: center;
     margin-bottom: 20px;
 }
 
-/* 1단계: 플래시 카드 디자인 */
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.input-field label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #334155;
+}
+
+.input-field input, #spell-input {
+    padding: 14px;
+    font-size: 1.1rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    font-weight: bold;
+    transition: border-color 0.2s;
+}
+
+.input-field input:focus, #spell-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+/* 플래시 카드 */
 .flashcard {
     width: 100%;
-    height: 220px;
+    height: 230px;
     background-color: #fff;
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
+    border: 2.5px solid #e2e8f0;
+    border-radius: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     cursor: pointer;
-    padding: 20px;
+    padding: 24px;
     box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    transition: transform 0.2s, border-color 0.2s;
 }
 
 .flashcard.flipped {
-    background-color: #f8f9fa;
+    background-color: #f8fafc;
     border-color: var(--primary-color);
 }
 
-.card-front, .card-back {
-    width: 100%;
-}
-
+.card-front, .card-back { width: 100%; }
 .word-audio-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 15px;
 }
 
 .card-front h2 {
-    font-size: 2.4rem;
+    font-size: 2.7rem;
     color: var(--primary-color);
     margin: 0;
+    font-weight: 800;
 }
 
-/* 스피커 버튼 스타일 */
 .btn-audio {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    font-size: 1.6rem;
     cursor: pointer;
-    padding: 5px;
+    padding: 6px;
     border-radius: 50%;
-    transition: background 0.2s, transform 0.1s;
     line-height: 1;
 }
 
 .btn-audio:hover {
-    background-color: #e9ecef;
-    transform: scale(1.1);
-}
-
-.btn-audio:active {
-    transform: scale(0.95);
+    background-color: var(--accent-color);
+    color: white;
 }
 
 #study-meaning {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     font-weight: bold;
-    color: #495057;
+    color: #1e293b;
     margin: 0;
 }
 
-.card-back {
-    display: none;
-}
-
-.flashcard.flipped .card-front { 
-    display: none; 
-}
-
-.flashcard.flipped .card-back { 
-    display: block; 
-}
+.card-back { display: none; }
+.flashcard.flipped .card-front { display: none; }
+.flashcard.flipped .card-back { display: block; }
 
 .example-tag {
     display: inline-block;
-    font-size: 0.75rem;
-    background-color: #6c757d;
+    font-size: 0.8rem;
+    background-color: var(--secondary-color);
     color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 3px 10px;
+    border-radius: 6px;
     margin-bottom: 15px;
-    text-transform: uppercase;
     font-weight: bold;
 }
 
 #study-example {
-    font-size: 1.1rem;
-    color: #212529;
-    line-height: 1.4;
+    font-size: 1.15rem;
+    color: #0f172a;
+    line-height: 1.5;
     margin: 0;
 }
 
 .hint-text {
     font-size: 0.85rem;
-    color: #999;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    color: #64748b;
+    margin-top: 12px;
+    margin-bottom: 24px;
 }
 
-/* 2단계: 퀴즈 영역 */
+/* 퀴즈 공통 구조 */
 .quiz-question {
     width: 100%;
     text-align: center;
-    margin-bottom: 20px;
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
+    margin-bottom: 22px;
+    background-color: #f8fafc;
+    padding: 24px;
+    border-radius: 14px;
     box-sizing: border-box;
-    border-left: 5px solid var(--primary-color);
+    border-left: 6px solid var(--primary-color);
 }
 
 .definition-text {
     font-size: 1.25rem;
-    color: #333;
+    color: #0f172a;
     line-height: 1.5;
     margin: 0 0 10px 0;
     word-break: keep-all;
@@ -208,93 +265,78 @@ header {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .option-btn {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     background-color: #fff;
-    border: 1.5px solid #ced4da;
-    border-radius: 8px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: bold;
     cursor: pointer;
+    color: #334155;
     transition: all 0.2s;
 }
 
-.option-btn:hover {
-    background-color: #f1f3f5;
-}
+.option-btn:hover { background-color: #f1f5f9; }
+.option-btn.correct { background-color: #d1fae5; border-color: var(--success-color); color: #065f46; }
+.option-btn.wrong { background-color: #fee2e2; border-color: var(--danger-color); color: #991b1b; }
 
-.option-btn.correct {
-    background-color: #d4edda;
-    border-color: var(--success-color);
-    color: #155724;
-}
-
-.option-btn.wrong {
-    background-color: #f8d7da;
-    border-color: var(--danger-color);
-    color: #721c24;
-}
+.spell-input-wrapper { display: flex; gap: 10px; width: 100%; margin-bottom: 15px; }
+#spell-input { flex: 1; }
 
 .feedback-text {
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    height: 24px;
-}
-
-/* 3단계: 결과 */
-.result-container {
+    margin-top: 16px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    height: 28px;
     text-align: center;
-    padding: 20px 0;
 }
 
-.score-text {
-    font-size: 1.3rem;
-    margin: 20px 0 30px 0;
+/* 교사용 최종 레포트 박스 */
+.teacher-verification-box {
+    background-color: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: left;
 }
 
-#final-score {
-    font-weight: bold;
+.teacher-verification-box h3 {
+    margin: 0 0 6px 0;
     color: var(--primary-color);
-    font-size: 1.8rem;
+    font-size: 1.15rem;
 }
 
-.btn-group {
-    display: flex;
-    gap: 15px;
-    width: 100%;
+.cert-code-box {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #1e293b;
+    margin-bottom: 15px;
+    white-space: pre-line;
 }
 
-.btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
+.code-highlight { color: var(--danger-color); font-weight: bold; }
+.congratulations { color: var(--success-color); font-size: 1.45rem; font-weight: 800; text-align: center;}
+.score-text { font-size: 1.25rem; font-weight: bold; text-align: center;}
 
-.btn.primary { 
-    background-color: var(--primary-color); 
-    color: white; 
-}
-
-.btn.primary:hover { 
-    background-color: #357abd; 
-}
-
-.btn.secondary { 
-    background-color: var(--secondary-color); 
-    color: white; 
-}
-
-.btn.secondary:hover { 
-    background-color: #5a6268; 
-}
+/* 버튼 설정 */
+.btn-group { display: flex; gap: 15px; width: 100%; }
+.btn { padding: 14px; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+.btn.primary { background-color: var(--primary-color); color: white; }
+.btn.primary:hover { background-color: #172554; }
+.btn.secondary { background-color: var(--secondary-color); color: white; }
+.btn.secondary:hover { background-color: #374151; }
+.btn.accent { background-color: var(--accent-color); color: white; width: 100%; }
+.btn.accent:hover { background-color: #0284c7; }
+.btn.large { width: 100%; padding: 16px; font-size: 1.15rem; }
