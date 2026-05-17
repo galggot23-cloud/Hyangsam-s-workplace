@@ -1,6 +1,3 @@
-// [수정 완료] 외부 words.js 파일로부터 깨짐 현상 없이 데이터를 수동 주입하는 모듈러 시스템 설정
-import { UNIT_TITLE, VOCAB_DATA } from './words.js';
-
 // 글로벌 상태 변수
 let studentID = "";
 let studentName = "";
@@ -61,11 +58,15 @@ const btnRestart = document.getElementById("btn-restart");
 
 // 초기 실행 환경 구성
 function initEngine() {
-    unitTitleEl.textContent = UNIT_TITLE;
-    currentWords = [...VOCAB_DATA];
-    totalWordsCount = currentWords.length;
-    
-    totalCountTxts.forEach(el => el.textContent = totalWordsCount);
+    // words.js에 선언된 변수를 보안 우회하여 즉시 주입
+    if (typeof UNIT_TITLE !== 'undefined' && typeof VOCAB_DATA !== 'undefined') {
+        unitTitleEl.textContent = UNIT_TITLE;
+        currentWords = [...VOCAB_DATA];
+        totalWordsCount = currentWords.length;
+        totalCountTxts.forEach(el => el.textContent = totalWordsCount);
+    } else {
+        unitTitleEl.textContent = "단어장 로드 오류! (words.js를 확인하세요)";
+    }
 }
 
 btnStartApp.addEventListener("click", () => {
@@ -327,5 +328,5 @@ btnRestart.addEventListener("click", () => {
     updateProgressBar();
 });
 
-// 엔진 가동 시동기
+// 엔진 시동
 initEngine();
