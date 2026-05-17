@@ -1,3 +1,6 @@
+// [수정 완료] 외부 words.js 파일로부터 깨짐 현상 없이 데이터를 수동 주입하는 모듈러 시스템 설정
+import { UNIT_TITLE, VOCAB_DATA } from './words.js';
+
 // 글로벌 상태 변수
 let studentID = "";
 let studentName = "";
@@ -88,11 +91,13 @@ btnStartApp.addEventListener("click", () => {
 });
 
 function speak(text) {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.85;
-    window.speechSynthesis.speak(utterance);
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
 }
 
 function showWordCard() {
@@ -191,7 +196,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
             showQuizQuestion();
         } else {
             if (wrongAnswers.length > 0) {
-                alert(`틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 마스터를 위해 오답 복습 단계로 복습합니다.`);
+                alert(`틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 마스터를 위해 오답 복습 단계로 넘어갑니다.`);
                 appMode = "wrongReview";
                 quizQueue = [...wrongAnswers];
                 wrongAnswers = []; 
@@ -322,4 +327,5 @@ btnRestart.addEventListener("click", () => {
     updateProgressBar();
 });
 
-window.onload = initEngine;
+// 엔진 가동 시동기
+initEngine();
