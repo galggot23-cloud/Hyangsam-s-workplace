@@ -28,7 +28,6 @@ body {
     transition: background-color 0.2s ease, border 0.2s ease;
 }
 
-/* 정답/오답 발생 시 앱 전체 화면 반짝임 피드백 효과 */
 .app-container.correct-flash { background-color: #ecfdf5; border: 3px solid var(--success-color); }
 .app-container.wrong-flash { background-color: #fef2f2; border: 3px solid var(--danger-color); }
 
