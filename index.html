@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 4 어휘 완전 마스터 프로그램 v2.5</title>
+    <title>Lesson 4 어휘 완전 마스터 프로그램</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1 id="unit-title">Lesson 4. Smart Spending</h1>
+            <h1 id="unit-title">Lesson 4. Be a Smart Spender</h1>
             <div id="student-info-badge" class="student-info-badge hidden">
-                👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 학생
+                👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 학생 학습 중
             </div>
             <div class="progress-bar-container">
                 <div id="progress-bar" style="width: 0%;"></div>
@@ -40,29 +40,29 @@
             </section>
 
             <section id="step-study" class="card-section hidden">
-                <div class="step-badge">1단계: 단어 암기 및 발음</div>
+                <div class="step-badge">1단계: 단어 암기 및 예문 학습 (<span id="study-count">1</span>/22)</div>
                 <div class="flashcard" id="flashcard">
                     <div class="card-front">
                         <div class="word-audio-wrapper">
                             <h2 id="study-word">word</h2>
-                            <button id="btn-speak" class="btn-audio" title="발음 듣기">🔊</button>
+                            <button id="btn-speak" class="btn-audio" title="발음 듣기">🔊 발음듣기</button>
                         </div>
                         <p id="study-meaning">뜻</p>
                     </div>
                     <div class="card-back">
-                        <span class="example-tag">Example Sentence</span>
-                        <p id="study-example"><i>예문</i></p>
+                        <span class="example-tag">교과서 예문 문맥 확인</span>
+                        <p id="study-example"><i>예문이 들어갑니다.</i></p>
                     </div>
                 </div>
-                <div class="hint-text">카드를 클릭하면 예문을 확인할 수 있습니다.</div>
+                <div class="hint-text">💡 카드를 터치/클릭하면 뒷면의 예문을 볼 수 있습니다.</div>
                 <div class="btn-group">
-                    <button id="btn-prev" class="btn secondary">이전</button>
-                    <button id="btn-next-word" class="btn primary">다음 단어</button>
+                    <button id="btn-prev" class="btn secondary">이전 단어</button>
+                    <button id="btn-next-word" class="btn primary">다음 단어 ➔</button>
                 </div>
             </section>
 
             <section id="step-quiz" class="card-section hidden">
-                <div class="step-badge" id="quiz-badge">2단계: 영영 뜻풀이 퀴즈</div>
+                <div class="step-badge" id="quiz-badge">2단계: 영영 뜻풀이 객관식 퀴즈</div>
                 <div class="quiz-question">
                     <h2 id="quiz-definition" class="definition-text">Definition</h2>
                     <p class="quiz-instruction">위 뜻풀이에 알맞은 영어 단어를 고르세요.</p>
@@ -72,41 +72,41 @@
             </section>
 
             <section id="step-spelling" class="card-section hidden">
-                <div class="step-badge">3단계: 완전 완성! 철자 쓰기 테스트</div>
+                <div class="step-badge">3단계: 완전 학습! 주관식 철자(Spelling) 쓰기</div>
                 <div class="quiz-question">
                     <h2 id="spell-definition" class="definition-text">Definition</h2>
                     <p class="quiz-instruction" id="spell-hint-meaning">한글 뜻 힌트</p>
                 </div>
                 <div class="spell-input-wrapper">
-                    <input type="text" id="spell-input" placeholder="영어 단어 타이핑" autocomplete="off" spellcheck="false">
-                    <button id="btn-spell-submit" class="btn primary">제출</button>
+                    <input type="text" id="spell-input" placeholder="정확한 철자를 타이핑하세요" autocomplete="off" spellcheck="false">
+                    <button id="btn-spell-submit" class="btn primary">정답 제출</button>
                 </div>
                 <div id="spell-feedback" class="feedback-text"></div>
             </section>
 
             <section id="step-result" class="card-section hidden">
-                <div class="step-badge success">4단계: 학습 완료 및 최종 성적 검증</div>
+                <div class="step-badge success">🏅 4단계: 학습 완료 및 최종 성적 검증</div>
                 <div class="result-container">
-                    <h2 class="congratulations">🎉 Lesson 4 어휘 완벽 클리어!</h2>
+                    <h2 class="congratulations">🎉 4과 모든 어휘 미션 완벽 클리어!</h2>
                     <p class="score-text">종합 성취도: 100% 만점 달성 완료</p>
                     
                     <div class="teacher-verification-box">
-                        <h3>📋 교사 제출용 수행평가 인증서</h3>
-                        <p class="verification-desc">아래의 내용을 전체 복사(드래그)하여 학급 과제방에 제출하세요.</p>
+                        <h3>📋 교사 제출용 수행평가 확인서</h3>
+                        <p class="verification-desc">아래의 박스 내용을 전체 복사하여 학급 과제방에 댓글로 제출하세요.</p>
                         
                         <div class="cert-code-box" id="cert-code-box">
                             ====================================<br>
                             [어휘 학습 수행평가 완료 인증서]<br>
                             ====================================<br>
                             ■ 학생 정보: <span id="report-id"></span> <span id="report-name"></span><br>
-                            ■ 학습 단원: Lesson 4. Smart Spending<br>
+                            ■ 학습 단원: Lesson 4. Be a Smart Spender<br>
                             ■ 학습 일시: <span id="report-date"></span><br>
-                            ■ 객관식 퀴즈: 22문항 오답 복습 완료 (Pass)<br>
-                            ■ 주관식 스펠링: 22문항 전체 정확 통과 (Pass)<br>
+                            ■ 객관식 퀴즈: 22문항 오답 무한 복습 완료 (Pass)<br>
+                            ■ 주관식 스펠링: 22문항 전체 정확 타이핑 통과 (Pass)<br>
                             ■ 위변조 방지 코드: <span id="report-hash" class="code-highlight"></span><br>
                             ====================================
                         </div>
-                        <button id="btn-copy-report" class="btn accent">인증서 내용 복사하기</button>
+                        <button id="btn-copy-report" class="btn accent">인증서 내용 자동 복사하기</button>
                     </div>
 
                     <button id="btn-restart" class="btn secondary">처음부터 다시 학습하기</button>
