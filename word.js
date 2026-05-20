@@ -1,4 +1,4 @@
-// ⚡ [완벽 디버깅 완료 어휘 데이터베이스] 문자열 키 동적 바인딩 보장
+// ⚡ [매핑 데이터 구조 재검증 완료] 브라우저 캐시 방어형 고정 키 매핑
 const ALL_VOCAB_DATA = {
     "unit4": {
         title: "Lesson 4. Be a Smart Spender",
