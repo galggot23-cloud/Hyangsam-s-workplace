@@ -74,7 +74,7 @@ const ALL_VOCAB_DATA = {
             { word: "saw", meaning: "n. 톱", definition: "n. a tool for cutting wood or other materials, typically with a long, thin steel blade", example: "Tom is cutting wood with a saw." },
             { word: "charge", meaning: "v. (요금을) 청구하다", definition: "v. to ask people to pay a particular amount of money for something", example: "They charge you $5 to get in the museum." },
             { word: "shocked", meaning: "a. 충격을 받은", definition: "a. very surprised and upset", example: "She was shocked when she heard the news." },
-            { word: "hand down", definition: "to pass traditions, knowledge, or possessions to the next generation", meaning: "물려주다, 전하다", example: "This ring was handed down to me by my grandmother." }
+            { word: "hand down", meaning: "물려주다, 전하다", definition: "to pass traditions, knowledge, or possessions to the next generation", example: "This ring was handed down to me by my grandmother." }
         ]
     },
     "7": {
