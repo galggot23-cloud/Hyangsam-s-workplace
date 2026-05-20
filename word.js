@@ -1,4 +1,4 @@
-// ⚡ [매핑 데이터 구조 재검증 완료] 브라우저 캐시 방어형 고정 키 매핑
+// ⚡ 단원 선택값과 100% 완벽하게 일치하도록 설계된 고정 데이터 베이스
 const ALL_VOCAB_DATA = {
     "unit4": {
         title: "Lesson 4. Be a Smart Spender",
