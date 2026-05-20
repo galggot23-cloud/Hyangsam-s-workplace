@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ 단원별 영어 어휘 마스터 챌린지 ⚡</title>
+    <title>⚡ 중학 영어 어휘 마스터 멀티 챌린지 ⚡</title>
     <link rel="stylesheet" href="style.css">
     
+    <script src="words.js"></script>
     <script src="script.js" defer></script>
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1 id="unit-title">🚀 영단어 보스 레이드 가동 중...</h1>
+            <h1 id="unit-title">🎯 단원별 영어 어휘 챌린지</h1>
             <div id="student-info-badge" class="student-info-badge hidden">
-                👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 크루 로그인
+                👤 <span id="display-student-id"></span> <span id="display-student-name"></span> 크루 탑승 완료
             </div>
             <div id="combo-badge" class="combo-badge hidden">🔥 0 COMBO!</div>
             <div class="progress-bar-container">
@@ -23,10 +24,11 @@
 
         <main>
             <section id="step-login" class="card-section">
-                <div class="step-badge">SYSTEM OVERDRIVE</div>
+                <div class="step-badge">SELECT MISSION</div>
                 <div class="login-box">
                     <h2>영어 어휘 미션 챌린지 🎮</h2>
-                    <p class="login-desc">학습 기록 증명 및 최종 완료 인증서 발급을 위해 정보를 입력하세요.</p>
+                    <p class="login-desc">학번, 이름과 함께 오늘 도전할 단원을 정확히 선택하세요.</p>
+                    
                     <div class="input-field">
                         <label for="input-student-id">학번 (예: 30101)</label>
                         <input type="text" id="input-student-id" placeholder="5자리 학번 입력" autocomplete="off">
@@ -35,7 +37,19 @@
                         <label for="input-student-name">이름</label>
                         <input type="text" id="input-student-name" placeholder="이름 입력" autocomplete="off">
                     </div>
-                    <button id="btn-start-app" class="btn primary large">⚡ 미션 스타트 (START) ➔</button>
+                    
+                    <div class="input-field">
+                        <label for="select-unit">📚 학습할 단원 선택</label>
+                        <select id="select-unit" style="width:100%; padding:13px; font-size:16px; border-radius:8px; border:2px solid #e2e8f0; font-weight:bold; background-color:#fff; cursor:pointer;">
+                            <option value="4">▶ [4과] Lesson 4. Be a Smart Spender</option>
+                            <option value="5" selected>▶ [5과] Lesson 5. Teamwork in Sports</option>
+                            <option value="6">▶ [6과] Lesson 6. Stories of Antiques and Values</option>
+                            <option value="7">▶ [7과] Lesson 7. Big Data and Modern Society</option>
+                            <option value="8">▶ [8과] Lesson 8. Traditional Korean Arts and Symbols</option>
+                        </select>
+                    </div>
+                    
+                    <button id="btn-start-app" class="btn primary large" style="margin-top:15px;">⚡ 미션 스타트 (START) ➔</button>
                 </div>
             </section>
 
