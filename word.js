@@ -1,32 +1,141 @@
-// =========================================================================
-// [교사용 단어 수정 창] - 이곳의 단원명과 단어 데이터만 바꾸고 저장하세요!
-// =========================================================================
-
-// 1. 학습할 단원 타이틀 설정
-const UNIT_TITLE = "Lesson 4. Be a Smart Spender";
-
-// 2. 단어 데이터 리스트 (형식에 맞춰 자유롭게 수정/추가 가능)
-const VOCAB_DATA = [
-    { word: "spender", meaning: "돈을 쓰는 사람", definition: "someone who spends money", example: "Tourists are big spenders." },
-    { word: "exchange", meaning: "교환하다", definition: "to give something to someone and receive something from that person", example: "My family and I exchange presents on Christmas." },
-    { word: "refund", meaning: "환불", definition: "a sum of money which is returned to you", example: "The clerk is going to refund my money." },
-    { word: "receipt", meaning: "영수증", definition: "a piece of paper that shows you have paid for something", example: "Don't throw away the receipt after you buy something." },
-    { word: "receive", meaning: "받다", definition: "to get something after someone gives it to you or sends it to you", example: "The singer received lots of gifts from his fans." },
-    { word: "budget", meaning: "예산", definition: "an amount of money that a person or company can spend", example: "We should plan our trip within a budget." },
-    { word: "donate", meaning: "기부하다", definition: "to give money to a group that needs help", example: "He donated money to the school in Africa." },
-    { word: "allowance", meaning: "용돈", definition: "money given by parents to a child regularly that the child can spend", example: "I have saved my allowance to buy a hat." },
-    { word: "effort", meaning: "노력", definition: "hard work that you do when you are trying to achieve something", example: "People made an effort to clean the beach." },
-    { word: "majority", meaning: "대다수", definition: "most of the people or things in a group", example: "The majority of people agree with this view." },
-    { word: "balance", meaning: "잔액", definition: "the amount of money you have in your bank account", example: "It is easy to check your bank balance on the Internet." },
-    { word: "have difficulty -ing", meaning: "~ 하는 데 어려움을 겪다", definition: "under the state or situation of having a problem", example: "Mike has difficulty using his new camera." },
-    { word: "charity", meaning: "자선 단체", definition: "an organization that gives money or help to people who need it", example: "Many people give food and clothes to the charity." },
-    { word: "remaining", meaning: "남아 있는", definition: "left over after a part has been taken, used, or lost", example: "Jack drank the remaining juice." },
-    { word: "tight", meaning: "빠듯한", definition: "(of money or time) limited or restricted", example: "They have a tight schedule this week." },
-    { word: "although", meaning: "비록~일지라도", definition: "in spite of the fact that; even though", example: "Although the bag is old, I like the bag's design." },
-    { word: "on the spot", meaning: "즉각, 즉석에서", definition: "in the exact place where something is happening", example: "Justin played the guitar on the spot." },
-    { word: "on sale", meaning: "판매 중인, 할인 중인", definition: "available to be bought, especially in a shop or store being offered at a reduced price", example: "Ice cream is on sale for half price." },
-    { word: "native", meaning: "토착민, 현지인", definition: "a local inhabitant", example: "There is a picture of a native of this area in this book." },
-    { word: "loose", meaning: "헐렁한", definition: "not fitting tightly or closely", example: "These pants are a little loose for me." },
-    { word: "shop-hop", meaning: "여러 가게를 돌아다니다", definition: "to visit many stores to compare prices or items", example: "Smart spenders usually shop-hop before buying." },
-    { word: "price tag", meaning: "가격표", definition: "a label showing the price of an item", example: "Check the price tag before you go to the counter." }
-];
+// ⚡ [최종 통합 어휘 데이터베이스] 4과 ~ 8과 교과서 전 수록 단어 완벽 연동
+const ALL_VOCAB_DATA = {
+    "4": {
+        title: "Lesson 4. Be a Smart Spender",
+        words: [
+            { word: "spender", meaning: "n. 돈을 쓰는 사람", definition: "n. someone who spends money", example: "Tourists are big spenders." },
+            { word: "exchange", meaning: "v. 교환하다", definition: "v. to give something to someone and receive something from that person", example: "My family and I exchange presents on Christmas." },
+            { word: "refund", meaning: "n. 환불", definition: "n. a sum of money which is returned to you", example: "The clerk is going to refund my money." },
+            { word: "receipt", meaning: "n. 영수증", definition: "n. a piece of paper that shows you have paid for something", example: "Don't throw away the receipt after you buy something." },
+            { word: "receive", meaning: "v. 받다", definition: "v. to get something after someone gives it to you or sends it to you", example: "The singer received lots of gifts from his fans." },
+            { word: "budget", meaning: "n. 예산", definition: "n. an amount of money that a person or company can spend", example: "We should plan our trip within a budget." },
+            { word: "donate", meaning: "v. 기부하다", definition: "v. to give money to a group that needs help", example: "He donated money to the school in Africa." },
+            { word: "allowance", meaning: "n. 용돈", definition: "n. money given by parents to a child regularly that the child can spend", example: "I have saved my allowance to buy a hat." },
+            { word: "effort", meaning: "n. 노력", definition: "n. hard work that you do when you are trying to achieve something", example: "People made an effort to clean the beach." },
+            { word: "majority", meaning: "n. 대다수", definition: "n. most of the people or things in a group", example: "The majority of people agree with this view." },
+            { word: "balance", meaning: "n. 잔액", definition: "n. the amount of money you have in your bank account", example: "It is easy to check your bank balance on the Internet." },
+            { word: "have difficulty -ing", meaning: "~ 하는 데 어려움을 겪다", definition: "under the state or situation of having a problem", example: "Mike has difficulty using his new camera." },
+            { word: "charity", meaning: "n. 자선 단체", definition: "n. an organization that gives money or help to people who need it", example: "Many people give food and clothes to the charity." },
+            { word: "remaining", meaning: "a. 남아 있는", definition: "a. left over after a part has been taken, used, or lost", example: "Jack drank the remaining juice." },
+            { word: "tight", meaning: "a. 빠듯한", definition: "a. (of money or time) limited or restricted", example: "They have a tight schedule this week." },
+            { word: "although", meaning: "conj. 비록~일지라도", definition: "conj. in spite of the fact that; even though", example: "Although the bag is old, I like the bag's design." },
+            { word: "on the spot", meaning: "즉각, 즉석에서", definition: "in the exact place where something is happening", example: "Justin played the guitar on the spot." },
+            { word: "on sale", meaning: "판매 중인, 할인 중인", definition: "available to be bought, especially in a shop or store being offered at a reduced price", example: "Ice cream is on sale for half price." },
+            { word: "native", meaning: "n. 토착민, 현지인", definition: "n. a local inhabitant", example: "There is a picture of a native of this area in this book." },
+            { word: "loose", meaning: "a. 헐렁한", definition: "a. not fitting tightly or closely", example: "These pants are a little loose for me." },
+            { word: "shop-hop", meaning: "여러 가게를 돌아다니다", definition: "to visit many stores to compare prices or items", example: "Smart spenders usually shop-hop before buying." },
+            { word: "price tag", meaning: "가격표", definition: "a label showing the price of an item", example: "Check the price tag before you go to the counter." }
+        ]
+    },
+    "5": {
+        title: "Lesson 5. Teamwork in Sports",
+        words: [
+            { word: "register", meaning: "v. 등록하다", definition: "v. to put someone’s or something’s name on an official list", example: "How many students registered for the English class?" },
+            { word: "pit", meaning: "n. (자동차 경주의) 피트", definition: "n. the area beside a race track where cars are repaired or get more gas during a race", example: "The racing cars can be repaired in the pit." },
+            { word: "pacer", meaning: "n. 페이서, 보조를 맞춰 걷는 사람", definition: "n. a person or thing that paces", example: "Kate couldn't finish the marathon without the help of her pacer." },
+            { word: "crew", meaning: "n. 팀, 무리", definition: "n. a group of people with a particular skill who work together", example: "There are 10 members in our crew." },
+            { word: "on one's own", meaning: "혼자서", definition: "for or by oneself", example: "He managed to fix the problem on his own." },
+            { word: "trophy", meaning: "n. 트로피", definition: "n. a metal cup or other object that someone gets for winning a game or race", example: "The winner held the trophy in the air." },
+            { word: "attention", meaning: "n. 주의, 주목", definition: "n. listening or looking carefully", example: "We have to pay attention to his speech." },
+            { word: "several", meaning: "det. 몇몇의", definition: "det. some, but not many", example: "Mina has seen the movie several times." },
+            { word: "achieve", meaning: "v. 달성하다, 성취하다", definition: "v. to succeed in doing or getting something you want", example: "I should try my best to achieve my goal." },
+            { word: "depending on", meaning: "~에 따라", definition: "determined by conditions or circumstances that follow", example: "My personality changes depending on the person." },
+            { word: "target", meaning: "n. 목표", definition: "n. the aim or result that you try to achieve", example: "Our target customers are teenagers." },
+            { word: "particular", meaning: "a. 특정한", definition: "a. special, or more than usual", example: "Do you have a particular restaurant in mind?" },
+            { word: "keep track of", meaning: "~에 대해 파악하다", definition: "to pay attention to someone or something, so that you know where they are or what is happening to them", example: "I followed the map, keeping track of our position." },
+            { word: "therefore", meaning: "ad. 그러므로", definition: "ad. for the reason that you have mentioned", example: "There is heavy traffic, therefore, we should take the subway." },
+            { word: "wear out", meaning: "(낡아서) 떨어지다, 해지다", definition: "to use something a lot so that it no longer works, or can no longer be used", example: "My boots are beginning to wear out." },
+            { word: "breathe", meaning: "v. 숨 쉬다", definition: "v. to take air into your body and let it out again", example: "Close your eyes and breathe deeply." },
+            { word: "hire", meaning: "v. 고용하다", definition: "v. to pay someone to work for you", example: "Tom was hired as a librarian." },
+            { word: "support", meaning: "v. 지원하다, 지지하다", definition: "v. to help someone, often when they are having problems", example: "Many students support the plans to change school uniforms." },
+            { word: "tribe", meaning: "n. 부족, 종족", definition: "n. a group of people who have their own language and ways of living", example: "We can learn the culture of the Masai tribe in this class." },
+            { word: "invisible", meaning: "a. (눈에) 보이지 않는, 볼 수 없는", definition: "a. not able to be seen", example: "Many stars are invisible to the naked eye." }
+        ]
+    },
+    "6": {
+        title: "Lesson 6. Stories of Antiques and Values",
+        words: [
+            { word: "antique", meaning: "n. 골동품", definition: "n. an old object such as a piece of furniture or jewelry that has a high value", example: "The palace is full of priceless antiques." },
+            { word: "furniture", meaning: "n. 가구", definition: "n. things such as chairs, beds, tables, and cupboards", example: "We need to buy some new furniture." },
+            { word: "dealer", meaning: "n. 판매상, 중개인", definition: "n. someone who buys and sells a particular product", example: "She bought the painting from a French art dealer." },
+            { word: "be known for", meaning: "~로 알려져 있다", definition: "to be famous or known about by a lot of people because of something", example: "Finland is known for its natural beauty." },
+            { word: "take advantage of", meaning: "~을 이용하다", definition: "to make good or unfair use of", example: "He was quick to take advantage of the chance." },
+            { word: "knock", meaning: "v. 두드리다", definition: "v. to hit a door with your hand so that someone inside knows you are there", example: "It is important to knock on the door before entering." },
+            { word: "be able to", meaning: "~을 할 수 있다", definition: "can; to have the ability to", example: "Alice is able to speak English and German." },
+            { word: "valuable", meaning: "a. 귀중한", definition: "a. worth a lot of money", example: "She sold a valuable ring at the flea market." },
+            { word: "worth", meaning: "a. ~의 가치가 있는", definition: "a. having a specific value", example: "The movie is worth watching all over again." },
+            { word: "reproduction", meaning: "n. 복제품", definition: "n. a copy of something such as a picture", example: "People usually see reproductions of Klimt's paintings." },
+            { word: "priceless", meaning: "a. 대단히 귀중한", definition: "a. extremely valuable", example: "The house was full of priceless paintings." },
+            { word: "attach", meaning: "v. 붙이다", definition: "v. to fasten one thing to another", example: "I attached the photo to the form." },
+            { word: "offer", meaning: "n. 제안, 제의", definition: "n. a statement that you are willing to do something for someone or give someone something", example: "The offer was so good that I accepted it right away." },
+            { word: "cut off", meaning: "~에서 …을 잘라내다", definition: "to separate something by cutting it away from the main part", example: "Cut the fat off the meat." },
+            { word: "on one's way", meaning: "~로 가는 도중에", definition: "in the process of traveling to or leaving someplace", example: "I usually buy coffee on my way to work." },
+            { word: "can't help -ing", meaning: "~하지 않을 수 없다", definition: "used when one feels very strongly compelled to do something", example: "The joke was so funny that I couldn't help laughing." },
+            { word: "saw", meaning: "n. 톱", definition: "n. a tool for cutting wood or other materials, typically with a long, thin steel blade", example: "Tom is cutting wood with a saw." },
+            { word: "charge", meaning: "v. (요금을) 청구하다", definition: "v. to ask people to pay a particular amount of money for something", example: "They charge you $5 to get in the museum." },
+            { word: "shocked", meaning: "a. 충격을 받은", definition: "a. very surprised and upset", example: "She was shocked when she heard the news." },
+            { word: "hand down", definition: "to pass traditions, knowledge, or possessions to the next generation", meaning: "물려주다, 전하다", example: "This ring was handed down to me by my grandmother." }
+        ]
+    },
+    "7": {
+        title: "Lesson 7. Big Data and Modern Society",
+        words: [
+            { word: "rent", meaning: "v. 빌리다", definition: "v. to pay someone for the use of something", example: "I rented a tent for our camping trip." },
+            { word: "develop", meaning: "v. 발전시키다, 성장하다", definition: "v. to grow and change into something bigger, better, or more important", example: "At that time, cities were developing fast." },
+            { word: "upload", meaning: "v. ~을 전송하다, 업로드하다", definition: "v. to move information from your computer to the Internet or another computer", example: "I uploaded the photos that I took in Africa on my blog." },
+            { word: "method", meaning: "n. 방법, 방식", definition: "n. a way of doing something", example: "This is the best method to solve the problems." },
+            { word: "purchase", meaning: "n. 구매, 구매품", definition: "n. the action of buying something; a thing that has been bought", example: "The customer is paying for his purchase." },
+            { word: "recommend", meaning: "v. 추천하다, 권하다", definition: "v. to suggest something to someone", example: "What gift would you recommend for my sister?" },
+            { word: "trace", meaning: "n. 흔적, 자취", definition: "n. a mark, object, or other indication of the existence or passing of something", example: "The man disappeared without a trace." },
+            { word: "analyze", meaning: "v. 분석하다", definition: "v. to examine something carefully", example: "The coach analyzed the data of the soccer players." },
+            { word: "predict", meaning: "v. 예측하다", definition: "v. to say that something is going to happen", example: "Weather forecasters predicted heavy snow for tonight." },
+            { word: "amount", meaning: "n. 양, 액수", definition: "n. a quantity of something", example: "We produce a large amount of trash every day." },
+            { word: "communication", meaning: "n. 통신, 의사소통", definition: "n. the act of sharing information with other people", example: "The Internet is an effective means of communication." },
+            { word: "online", meaning: "ad. 온라인으로", definition: "ad. on or through the Internet", example: "You can buy ticket online." },
+            { word: "passenger", meaning: "n. 승객", definition: "n. a person who is traveling in a car, bus, train, or airplane", example: "The bus was full of passengers." },
+            { word: "route", meaning: "n. 경로, 노선", definition: "n. a way from one place to another", example: "The bus driver changed his usual route today." },
+            { word: "spread", meaning: "n. 확산, 전파", definition: "n. the development or growth of something so that it affects a larger area or a larger number of people", example: "They are trying to control the spread of the disease." },
+            { word: "symptom", meaning: "n. 증상, 징후", definition: "n. something that shows you may have a particular illness", example: "The first symptom of the disease is coughing." },
+            { word: "database", meaning: "n. 데이터베이스", definition: "n. a large amount of information stored in a computer system", example: "They keep a database of all the students' grades." },
+            { word: "improve", meaning: "v. 향상하다, 향상시키다", definition: "v. to become better, or to make something better", example: "I want to improve my English writing skills." },
+            { word: "include", meaning: "v. 포함하다", definition: "v. contain as part of a whole", example: "The tour includes a visit to the Eiffel Tower." },
+            { word: "performance", meaning: "n. 경기력, 성과", definition: "n. the action or process of accomplishing a task or function", example: "The performances in the World Cup were poor." },
+            { word: "focus on", meaning: "~에 주력하다", definition: "to center on or be dedicated to something in particular", example: "Many people focus on environmental issues." },
+            { word: "crime", meaning: "n. 범죄", definition: "n. an action that the law does not allow", example: "They have been committing several crimes, including hacking." },
+            { word: "identify", meaning: "v. 확인하다, 알아보다", definition: "v. to realize who someone is or what something is", example: "It is difficult to identify people by their voice." },
+            { word: "industry", meaning: "n. 산업, 공업", definition: "n. the work or business of manufacturing products or providing services", example: "The music industry in Korea is growing fast." },
+            { word: "play a role", meaning: "역할을 하다", definition: "to have an effect or influence on something", example: "A good diet plays a large role in helping people live long." }
+        ]
+    },
+    "8": {
+        title: "Lesson 8. Traditional Korean Arts and Symbols",
+        words: [
+            { word: "dynasty", meaning: "n. 시대, 왕조", definition: "n. a period of time during which members of the same family rule a country or region", example: "The book was written in the Joseon dynasty." },
+            { word: "carp", meaning: "n. 잉어", definition: "n. a large fish that lives in lakes and rivers", example: "Colorful carp are swimming in the lake." },
+            { word: "bamboo", meaning: "n. 대나무", definition: "n. a giant woody grass that grows mainly in the tropics", example: "Let's take a walk in the bamboo forest." },
+            { word: "lotus flower", meaning: "연꽃", definition: "an Asian water plant with large white or pink flowers", example: "Lotus flowers are in bloom on the pond." },
+            { word: "object", meaning: "n. 물건, 물체", definition: "n. a thing that you can see and touch", example: "The object that he found was old." },
+            { word: "symbol", meaning: "n. 상징, 기호", definition: "n. a sign, picture, object, etc. that represents something else", example: "A clover with four leaves is a symbol of luck." },
+            { word: "loyalty", meaning: "n. 충실, 충성", definition: "n. a feeling of support for someone or something", example: "Soldiers swore their loyalty to the country." },
+            { word: "appear", meaning: "v. 나타나다, 출현하다", definition: "v. to begin to be seen; come into existence or use", example: "The boy suddenly appeared from behind the tree." },
+            { word: "folk painting", meaning: "민화", definition: "art work which is traditional and typical of ordinary people", example: "The tiger is a common subject in Korean folk paintings." },
+            { word: "represent", meaning: "v. 나타내다, 상징하다", definition: "v. to show or mean something", example: "The dove represents peace." },
+            { word: "disappointed", meaning: "a. 실망한", definition: "a. unhappy because something you hoped for did not happen", example: "She was disappointed with the result of the test." },
+            { word: "realize", meaning: "v. 깨닫다, 알아차리다", definition: "v. to know or understand something that you did not know before", example: "I suddenly realized that I left my phone at home." },
+            { word: "filial piety", meaning: "효도", definition: "the virtue of respect for one's parents, elders, and ancestors", example: "In traditional Korea, filial piety was considered the most important virtue." },
+            { word: "storyteller", meaning: "n. 이야기꾼", definition: "n. a person who tells stories", example: "The storyteller told us an interesting ghost story." },
+            { word: "once upon a time", meaning: "옛날옛적에", definition: "used at the beginning of children's stories to mean a long time ago", example: "Once upon a time there lived a very beautiful queen." },
+            { word: "symbolic", meaning: "a. 상징적인", definition: "a. representing a particular idea or quality", example: "Nature’s symbolic color is green." },
+            { word: "symbolize", meaning: "v. 상징하다", definition: "v. to be the symbol of something", example: "The shape of a heart symbolizes love." },
+            { word: "bend", meaning: "v. 굽다, 구부러지다", definition: "v. to shape or force something straight into a curve or angle", example: "Bend your knees when you stretch." },
+            { word: "bloom", meaning: "v. 꽃을 피우다, 꽃이 피다", definition: "v. to produce flowers", example: "Those pink roses will bloom in June." },
+            { word: "for this reason", meaning: "이런 이유 때문에", definition: "therefore, thus", example: "For this reason, we need signs in this area." },
+            { word: "despite", meaning: "prep. ~에도 불구하고", definition: "prep. although something happens or exists", example: "The students enjoyed the sports day despite the hot weather." },
+            { word: "justice", meaning: "n. 정의, 공정", definition: "n. the quality of being fair and reasonable; fairness in the way people are treated", example: "They want to have freedom and justice." },
+            { word: "thus", meaning: "ad. 그러므로, 따라서", definition: "ad. as a result of the fact that you have just mentioned", example: "You thus need to stay alert and focused." },
+            { word: "attitude", meaning: "n. 태도, 자세", definition: "n. the way you think or feel about something", example: "He has a good attitude towards his teachers." },
+            { word: "behavior", meaning: "n. 행동", definition: "n. a particular way of acting", example: "Sally's bad behavior began to annoy us." },
+            { word: "remind ~ of", meaning: "~에게 …을 상기시키다", definition: "to make someone remember something", example: "The picture reminds me of my school days." }
+        ]
+    }
+};
