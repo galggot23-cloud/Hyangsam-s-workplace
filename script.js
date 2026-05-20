@@ -88,18 +88,19 @@ function playSound(type) {
 btnStartApp.addEventListener("click", () => {
     studentID = inputID.value.trim();
     studentName = inputName.value.trim();
-    const selectedUnitNum = selectUnitEl.value;
+    const selectedUnitNum = selectUnitEl.value; // 여기서 'unit4', 'unit5' 등이 반환됩니다.
     
     if (!studentID || !studentName) {
         alert("학번과 이름을 올바르게 입력해주세요!");
         return;
     }
     
+    // 💡 핵심 버그 해결 코너: 다이렉트 키 매핑 방식으로 정밀 탐색
     if (typeof ALL_VOCAB_DATA !== 'undefined' && ALL_VOCAB_DATA[selectedUnitNum]) {
         activeUnitTitle = ALL_VOCAB_DATA[selectedUnitNum].title;
         currentWords = [...ALL_VOCAB_DATA[selectedUnitNum].words];
     } else {
-        alert("데이터 매핑 실패! 코드가 고정 구조와 호환되지 않습니다.");
+        alert("단원 데이터 연동 도중 에러가 발생했습니다. words.js 파일이 정상적으로 등록되었는지 확인하세요.");
         return;
     }
     
@@ -256,7 +257,7 @@ function showFinalResult() {
     document.getElementById("final-praise").textContent = praises[Math.floor(Math.random() * praises.length)];
     
     const now = new Date();
-    document.getElementById("report-date").textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById("report-date").textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}시 ${String(now.getMinutes()).padStart(2,'0')}분`;
     document.getElementById("report-hash").textContent = generateSecureCode(studentID, studentName, activeUnitTitle, maxCombo);
     updateProgressBar();
 }
