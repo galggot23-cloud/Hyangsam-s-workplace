@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
 :root {
-    --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); /* 🌟 어두운 요소 제거: 극도로 밝고 선명한 라이트 블루 그라데이션 */
+    --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     --card-bg: #ffffff; 
-    --primary-color: #1e40af; /* 🌟 더 짙고 명확한 네이비 블루 */
+    --primary-color: #1e40af; 
     --primary-hover: #1e3a8a;
     --accent-color: #0d9488;
     --success-color: #10b981;
     --danger-color: #ef4444;
-    --text-main: #0f172a; /* 🌟 가독성을 위해 완전히 진한 블랙에 가까운 색상 */
+    --text-main: #0f172a; 
     --text-muted: #334155;
-    --border-strong: #0f172a; /* 🌟 입력창과 배경을 확실하게 쪼개주는 선명한 테두리선 */
+    --border-strong: #0f172a; 
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', 'Noto Sans KR', sans-serif; }
@@ -29,7 +29,7 @@ body {
     width: 100%;
     max-width: 650px;
     background: #ffffff;
-    border: 3px solid var(--border-strong); /* 🌟 전체 영역 외곽선 강화 */
+    border: 3px solid var(--border-strong); 
     border-radius: 24px;
     padding: 30px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -56,7 +56,6 @@ header h1 { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 15
 
 .hidden { display: none !important; }
 
-/* 🌟 SELECT MISSION 글씨 크기 확대 및 강조 강화 */
 .step-badge.large-badge {
     align-self: center; 
     padding: 8px 24px; 
@@ -80,11 +79,10 @@ header h1 { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 15
 .input-field { display: flex; flex-direction: column; gap: 8px; }
 .input-field label { font-size: 15px; font-weight: 900; color: #0f172a; }
 
-/* 🌟 입력창과 배경색이 눈에 아주 띄게 선명하도록 대조 수정 */
 .input-field input, .input-field select { 
     padding: 14px; 
-    background: #ffffff !important; /* 🌟 완전 투명하지 않은 쨍한 화이트 */
-    border: 3px solid var(--border-strong) !important; /* 🌟 선명한 검은색 계열 테두리 고정 */
+    background: #ffffff !important; 
+    border: 3px solid var(--border-strong) !important; 
     border-radius: 12px; 
     color: #0f172a !important; 
     font-size: 16px; 
@@ -103,7 +101,6 @@ header h1 { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 15
 .btn.accent:hover { opacity: 0.9; transform: translateY(-2px); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-/* 🌟 플래시카드 시인성 및 색상 전면 보정 */
 .flashcard { width: 100%; height: 280px; perspective: 1000px; cursor: pointer; }
 .card-front, .card-back { position: absolute; width: 100%; height: 100%; left: 0; top: 0; padding: 30px; background: #ffffff; border: 3px solid var(--border-strong); border-radius: 20px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
 .card-back { transform: rotateY(180deg); background: #f0fdfa; border-color: #0d9488; }
