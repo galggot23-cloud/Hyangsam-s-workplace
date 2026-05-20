@@ -1,6 +1,6 @@
-// ⚡ [최종 통합 어휘 데이터베이스] 4과 ~ 8과 교과서 전 수록 단어 완벽 연동
+// ⚡ [완벽 디버깅 완료 어휘 데이터베이스] 문자열 키 동적 바인딩 보장
 const ALL_VOCAB_DATA = {
-    "4": {
+    "unit4": {
         title: "Lesson 4. Be a Smart Spender",
         words: [
             { word: "spender", meaning: "n. 돈을 쓰는 사람", definition: "n. someone who spends money", example: "Tourists are big spenders." },
@@ -27,7 +27,7 @@ const ALL_VOCAB_DATA = {
             { word: "price tag", meaning: "가격표", definition: "a label showing the price of an item", example: "Check the price tag before you go to the counter." }
         ]
     },
-    "5": {
+    "unit5": {
         title: "Lesson 5. Teamwork in Sports",
         words: [
             { word: "register", meaning: "v. 등록하다", definition: "v. to put someone’s or something’s name on an official list", example: "How many students registered for the English class?" },
@@ -52,7 +52,7 @@ const ALL_VOCAB_DATA = {
             { word: "invisible", meaning: "a. (눈에) 보이지 않는, 볼 수 없는", definition: "a. not able to be seen", example: "Many stars are invisible to the naked eye." }
         ]
     },
-    "6": {
+    "unit6": {
         title: "Lesson 6. Stories of Antiques and Values",
         words: [
             { word: "antique", meaning: "n. 골동품", definition: "n. an old object such as a piece of furniture or jewelry that has a high value", example: "The palace is full of priceless antiques." },
@@ -77,7 +77,7 @@ const ALL_VOCAB_DATA = {
             { word: "hand down", meaning: "물려주다, 전하다", definition: "to pass traditions, knowledge, or possessions to the next generation", example: "This ring was handed down to me by my grandmother." }
         ]
     },
-    "7": {
+    "unit7": {
         title: "Lesson 7. Big Data and Modern Society",
         words: [
             { word: "rent", meaning: "v. 빌리다", definition: "v. to pay someone for the use of something", example: "I rented a tent for our camping trip." },
@@ -107,7 +107,7 @@ const ALL_VOCAB_DATA = {
             { word: "play a role", meaning: "역할을 하다", definition: "to have an effect or influence on something", example: "A good diet plays a large role in helping people live long." }
         ]
     },
-    "8": {
+    "unit8": {
         title: "Lesson 8. Traditional Korean Arts and Symbols",
         words: [
             { word: "dynasty", meaning: "n. 시대, 왕조", definition: "n. a period of time during which members of the same family rule a country or region", example: "The book was written in the Joseon dynasty." },
