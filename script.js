@@ -99,7 +99,7 @@ btnStartApp.addEventListener("click", () => {
         activeUnitTitle = ALL_VOCAB_DATA[selectedUnitNum].title;
         currentWords = [...ALL_VOCAB_DATA[selectedUnitNum].words];
     } else {
-        alert("단어 데이터를 찾을 수 없습니다. words.js를 확인하세요.");
+        alert("데이터를 찾을 수 없습니다.");
         return;
     }
     
@@ -123,7 +123,7 @@ function speak(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; utterance.rate = 0.88;
+        utterance.lang = 'en-US'; utterance.rate = 0.92;
         window.speechSynthesis.speak(utterance);
     }
 }
@@ -136,7 +136,7 @@ function showWordCard() {
     studyMeaning.textContent = current.meaning;
     studyExample.textContent = current.example;
     btnPrev.disabled = currentIndex === 0;
-    btnNextWord.textContent = (currentIndex === totalWordsCount - 1) ? "2단계 객관식 퀴즈 풀기 시작! ➔" : "다음 단어 ➔";
+    btnNextWord.textContent = (currentIndex === totalWordsCount - 1) ? "퀴즈 스테이지 진입 ➔" : "다음 단어 ➔";
     updateProgressBar();
     setTimeout(() => { speak(current.word); }, 150);
 }
@@ -158,11 +158,9 @@ btnPrev.addEventListener("click", () => { if (currentIndex > 0) { currentIndex--
 function showQuizQuestion() {
     quizFeedback.textContent = ""; appContainer.className = "app-container";
     if (appMode === "wrongReview") {
-        quizBadge.textContent = "🔄 2단계: 틀린 오답 완벽 재점검 코스";
-        quizBadge.style.backgroundColor = "#fee2e2"; quizBadge.style.color = "var(--danger-color)";
+        quizBadge.textContent = "🔄 오답 부스트 트랙";
     } else {
-        quizBadge.textContent = "2단계: 영영 뜻풀이 객관식 퀴즈";
-        quizBadge.style.backgroundColor = "#e0f2fe"; quizBadge.style.color = "#0369a1";
+        quizBadge.textContent = "2단계: 영영 뜻풀이 퀴즈";
     }
     const current = quizQueue[currentIndex]; quizDefinition.textContent = current.definition;
     const options = [current.word];
@@ -180,7 +178,7 @@ function updateCombo(isCorrect) {
     if(!comboBadge) return;
     if (isCorrect) {
         currentCombo++; if (currentCombo > maxCombo) maxCombo = currentCombo;
-        comboBadge.textContent = `🔥 ${currentCombo} COMBO!`; comboBadge.style.transform = "scale(1.25)";
+        comboBadge.textContent = `🔥 ${currentCombo} COMBO!`; comboBadge.style.transform = "scale(1.3)";
         setTimeout(() => comboBadge.style.transform = "scale(1)", 150);
     } else { currentCombo = 0; comboBadge.textContent = `💥 COMBO 리셋!`; }
 }
@@ -189,11 +187,11 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
     const buttons = quizOptions.querySelectorAll(".option-btn"); buttons.forEach(btn => btn.disabled = true);
     if (selectedText === currentObj.word) {
         selectedBtn.classList.add("correct"); appContainer.classList.add("correct-flash");
-        quizFeedback.style.color = "var(--success-color)"; quizFeedback.textContent = "⭕ 완벽한 정답입니다! 지식이 +1 상승했습니다.";
+        quizFeedback.style.color = "var(--success-color)"; quizFeedback.textContent = "⭕ Excellent!";
         playSound('correct'); updateCombo(true); speak(currentObj.word);
     } else {
         selectedBtn.classList.add("wrong"); appContainer.classList.add("wrong-flash");
-        quizFeedback.style.color = "var(--danger-color)"; quizFeedback.textContent = `❌ 아쉽습니다! 정답은 [ ${currentObj.word} ]`;
+        quizFeedback.style.color = "var(--danger-color)"; quizFeedback.textContent = `❌ 정답: [ ${currentObj.word} ]`;
         playSound('wrong'); updateCombo(false);
         buttons.forEach(btn => { if (btn.textContent === currentObj.word) btn.classList.add("correct"); });
         if (!wrongAnswers.some(w => w.word === currentObj.word)) wrongAnswers.push(currentObj);
@@ -202,7 +200,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
         if (currentIndex < quizQueue.length - 1) { currentIndex++; showQuizQuestion(); }
         else {
             if (wrongAnswers.length > 0) {
-                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 발견되었습니다. 100% 마스터를 위해 복습 코스를 시작합니다.`);
+                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 마스터 마라톤을 시작합니다!`);
                 appMode = "wrongReview"; quizQueue = [...wrongAnswers]; wrongAnswers = []; currentIndex = 0; showQuizQuestion();
             } else {
                 appMode = "spelling"; quizQueue = [...currentWords]; shuffleArray(quizQueue); currentIndex = 0;
@@ -217,7 +215,7 @@ function showSpellingQuestion() {
     spellInput.value = ""; spellInput.disabled = false; btnSpellSubmit.disabled = false;
     spellCount.textContent = currentIndex + 1; spellInput.focus();
     const current = quizQueue[currentIndex]; spellDefinition.textContent = current.definition;
-    spellHintMeaning.textContent = `💡 한글 뜻 힌트:  ${current.meaning}`;
+    spellHintMeaning.textContent = `💡 한글 뜻:  ${current.meaning}`;
     updateProgressBar();
 }
 
@@ -228,12 +226,12 @@ function checkSpellingAnswer() {
     spellInput.disabled = true; btnSpellSubmit.disabled = true;
     if (userInput === correctAnswer) {
         appContainer.classList.add("correct-flash"); spellFeedback.style.color = "var(--success-color)";
-        spellFeedback.textContent = "⭕ 대단해요! 정확한 스펠링 타이핑 성공!";
+        spellFeedback.textContent = "⭕ PERFECT SPELLED!";
         playSound('correct'); updateCombo(true); speak(quizQueue[currentIndex].word);
         setTimeout(() => { if (currentIndex < quizQueue.length - 1) { currentIndex++; showSpellingQuestion(); } else { showFinalResult(); } }, 1300);
     } else {
         appContainer.classList.add("wrong-flash"); spellFeedback.style.color = "var(--danger-color)";
-        spellFeedback.textContent = `❌ 오답! 올바른 철자는 [ ${quizQueue[currentIndex].word} ] 입니다.`;
+        spellFeedback.textContent = `❌ 정답은 [ ${quizQueue[currentIndex].word} ]`;
         playSound('wrong'); updateCombo(false);
         setTimeout(() => { if (currentIndex < quizQueue.length - 1) { currentIndex++; showSpellingQuestion(); } else { showFinalResult(); } }, 2500);
     }
@@ -244,40 +242,27 @@ function showFinalResult() {
     if(comboBadge) comboBadge.classList.add("hidden");
     stepSpellingSection.classList.add("hidden"); stepResultSection.classList.remove("hidden");
     
-    const reportIdEl = document.getElementById("report-id");
-    const reportNameEl = document.getElementById("report-name");
-    const reportUnitEl = document.getElementById("report-unit");
-    const reportDateEl = document.getElementById("report-date");
-    const reportComboEl = document.getElementById("report-combo");
-    const reportHashEl = document.getElementById("report-hash");
-    const finalPraiseEl = document.getElementById("final-praise");
-
-    if (reportIdEl) reportIdEl.textContent = studentID;
-    if (reportNameEl) reportNameEl.textContent = studentName;
-    if (reportUnitEl) reportUnitEl.textContent = activeUnitTitle;
-    if (reportComboEl) reportComboEl.textContent = maxCombo;
+    document.getElementById("report-id").textContent = studentID;
+    document.getElementById("report-name").textContent = studentName;
+    document.getElementById("report-unit").textContent = activeUnitTitle;
+    document.getElementById("report-combo").textContent = maxCombo;
     
     playSound('victory');
     const praises = [
-        "👑 영예의 전당 등극! 단어의 신이 나타났습니다!",
-        "🚀 역대급 집중력! 단원 올클리어에 성공했습니다!",
-        "🏅 완벽한 성적입니다. 어휘 수행평가는 프리패스!",
-        "✨ 지치지 않는 집중 레이스 완주를 격하게 축하합니다!"
+        "👑 명예의 전당 등극! 단어의 최고 존엄!",
+        "🚀 역대급 집중력! 단원 올클리어 성공!",
+        "🏅 완벽한 성적입니다. 어휘 수행평가 가뿐히 Pass!"
     ];
-    if(finalPraiseEl) finalPraiseEl.textContent = praises[Math.floor(Math.random() * praises.length)];
+    document.getElementById("final-praise").textContent = praises[Math.floor(Math.random() * praises.length)];
     
     const now = new Date();
-    if (reportDateEl) {
-        reportDateEl.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    }
-    if (reportHashEl) {
-        reportHashEl.textContent = generateSecureCode(studentID, studentName, activeUnitTitle, maxCombo);
-    }
+    document.getElementById("report-date").textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById("report-hash").textContent = generateSecureCode(studentID, studentName, activeUnitTitle, maxCombo);
     updateProgressBar();
 }
 
 function generateSecureCode(id, name, unit, combo) {
-    let hash = 0; const secureString = `${id}_${name}_${unit}_${combo}_2026_Ultimate`;
+    let hash = 0; const secureString = `${id}_${name}_${unit}_${combo}_2026_Pro`;
     for (let i = 0; i < secureString.length; i++) { hash = (hash << 5) - hash + secureString.charCodeAt(i); hash |= 0; }
     return "CHAMP-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
@@ -285,25 +270,19 @@ function generateSecureCode(id, name, unit, combo) {
 if (btnSpellSubmit) btnSpellSubmit.addEventListener("click", checkSpellingAnswer);
 if (spellInput) { spellInput.addEventListener("keyup", (e) => { if (e.key === "Enter") checkSpellingAnswer(); }); }
 
-const btnCopyReportEl = document.getElementById("btn-copy-report");
-if (btnCopyReportEl) {
-    btnCopyReportEl.addEventListener("click", () => {
-        const textToCopy = document.getElementById("cert-code-box").innerText;
-        navigator.clipboard.writeText(textToCopy).then(() => { alert("📋 미션 수행 인증서가 복사되었습니다!\n과제 제출방에 붙여넣기하세요."); });
-    });
-}
+document.getElementById("btn-copy-report").addEventListener("click", () => {
+    const textToCopy = document.getElementById("cert-code-box").innerText;
+    navigator.clipboard.writeText(textToCopy).then(() => { alert("📋 완료 확인서가 클립보드에 복사되었습니다!"); });
+});
 
-const btnRestartEl = document.getElementById("btn-restart");
-if (btnRestartEl) {
-    btnRestartEl.addEventListener("click", () => {
-        if(inputID) inputID.value = ""; if(inputName) inputName.value = "";
-        if(studentBadge) studentBadge.classList.add("hidden");
-        if(stepResultSection) stepResultSection.classList.add("hidden");
-        if(stepLoginSection) stepLoginSection.classList.remove("hidden");
-        unitTitleEl.textContent = "🎯 단원별 영어 어휘 챌린지";
-        appMode = "login"; updateProgressBar();
-    });
-}
+document.getElementById("btn-restart").addEventListener("click", () => {
+    inputID.value = ""; inputName.value = "";
+    studentBadge.classList.add("hidden");
+    stepResultSection.classList.add("hidden");
+    stepLoginSection.classList.remove("hidden");
+    unitTitleEl.textContent = "🎯 단원별 영어 어휘 챌린지";
+    appMode = "login"; updateProgressBar();
+});
 
 function updateProgressBar() {
     if(!progressBar) return;
