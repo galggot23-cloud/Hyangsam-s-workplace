@@ -88,18 +88,19 @@ function playSound(type) {
 btnStartApp.addEventListener("click", () => {
     studentID = inputID.value.trim();
     studentName = inputName.value.trim();
-    const selectedUnitNum = selectUnitEl.value;
+    const selectedUnitNum = selectUnitEl.value; // "unit4", "unit5" 형태로 추출됨
     
     if (!studentID || !studentName) {
         alert("학번과 이름을 올바르게 입력해주세요!");
         return;
     }
     
+    // 안전 구조 검사 레이어 부착
     if (typeof ALL_VOCAB_DATA !== 'undefined' && ALL_VOCAB_DATA[selectedUnitNum]) {
         activeUnitTitle = ALL_VOCAB_DATA[selectedUnitNum].title;
         currentWords = [...ALL_VOCAB_DATA[selectedUnitNum].words];
     } else {
-        alert("데이터를 찾을 수 없습니다.");
+        alert("데이터 매핑 실패! 코드가 올바르게 저장되었는지 확인해주세요.");
         return;
     }
     
