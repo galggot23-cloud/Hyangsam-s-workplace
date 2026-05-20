@@ -88,19 +88,18 @@ function playSound(type) {
 btnStartApp.addEventListener("click", () => {
     studentID = inputID.value.trim();
     studentName = inputName.value.trim();
-    const selectedUnitNum = selectUnitEl.value; // "unit4", "unit5" 형태로 추출됨
+    const selectedUnitNum = selectUnitEl.value;
     
     if (!studentID || !studentName) {
         alert("학번과 이름을 올바르게 입력해주세요!");
         return;
     }
     
-    // 안전 구조 검사 레이어 부착
     if (typeof ALL_VOCAB_DATA !== 'undefined' && ALL_VOCAB_DATA[selectedUnitNum]) {
         activeUnitTitle = ALL_VOCAB_DATA[selectedUnitNum].title;
         currentWords = [...ALL_VOCAB_DATA[selectedUnitNum].words];
     } else {
-        alert("데이터 매핑 실패! 코드가 올바르게 저장되었는지 확인해주세요.");
+        alert("데이터 매핑 실패! 코드가 고정 구조와 호환되지 않습니다.");
         return;
     }
     
@@ -188,11 +187,11 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
     const buttons = quizOptions.querySelectorAll(".option-btn"); buttons.forEach(btn => btn.disabled = true);
     if (selectedText === currentObj.word) {
         selectedBtn.classList.add("correct"); appContainer.classList.add("correct-flash");
-        quizFeedback.style.color = "var(--success-color)"; quizFeedback.textContent = "⭕ Excellent!";
+        quizFeedback.style.color = "#10b981"; quizFeedback.textContent = "⭕ Excellent!";
         playSound('correct'); updateCombo(true); speak(currentObj.word);
     } else {
         selectedBtn.classList.add("wrong"); appContainer.classList.add("wrong-flash");
-        quizFeedback.style.color = "var(--danger-color)"; quizFeedback.textContent = `❌ 정답: [ ${currentObj.word} ]`;
+        quizFeedback.style.color = "#ef4444"; quizFeedback.textContent = `❌ 정답: [ ${currentObj.word} ]`;
         playSound('wrong'); updateCombo(false);
         buttons.forEach(btn => { if (btn.textContent === currentObj.word) btn.classList.add("correct"); });
         if (!wrongAnswers.some(w => w.word === currentObj.word)) wrongAnswers.push(currentObj);
@@ -201,7 +200,7 @@ function checkQuizAnswer(selectedBtn, selectedText, currentObj) {
         if (currentIndex < quizQueue.length - 1) { currentIndex++; showQuizQuestion(); }
         else {
             if (wrongAnswers.length > 0) {
-                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 마스터 마라톤을 시작합니다!`);
+                alert(`💡 틀린 문제가 ${wrongAnswers.length}개 있습니다. 완벽 정복을 유도합니다!`);
                 appMode = "wrongReview"; quizQueue = [...wrongAnswers]; wrongAnswers = []; currentIndex = 0; showQuizQuestion();
             } else {
                 appMode = "spelling"; quizQueue = [...currentWords]; shuffleArray(quizQueue); currentIndex = 0;
@@ -226,12 +225,12 @@ function checkSpellingAnswer() {
     if (!userInput) return;
     spellInput.disabled = true; btnSpellSubmit.disabled = true;
     if (userInput === correctAnswer) {
-        appContainer.classList.add("correct-flash"); spellFeedback.style.color = "var(--success-color)";
+        appContainer.classList.add("correct-flash"); spellFeedback.style.color = "#10b981";
         spellFeedback.textContent = "⭕ PERFECT SPELLED!";
         playSound('correct'); updateCombo(true); speak(quizQueue[currentIndex].word);
         setTimeout(() => { if (currentIndex < quizQueue.length - 1) { currentIndex++; showSpellingQuestion(); } else { showFinalResult(); } }, 1300);
     } else {
-        appContainer.classList.add("wrong-flash"); spellFeedback.style.color = "var(--danger-color)";
+        appContainer.classList.add("wrong-flash"); spellFeedback.style.color = "#ef4444";
         spellFeedback.textContent = `❌ 정답은 [ ${quizQueue[currentIndex].word} ]`;
         playSound('wrong'); updateCombo(false);
         setTimeout(() => { if (currentIndex < quizQueue.length - 1) { currentIndex++; showSpellingQuestion(); } else { showFinalResult(); } }, 2500);
